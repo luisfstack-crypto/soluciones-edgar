@@ -11,17 +11,17 @@ class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Su saldo actual', '$' . (auth()->user()->balance ?? 0) . ' MXN')
-                ->description('Saldo disponible en cuenta')
+            Stat::make('Saldo Actual', '$' . number_format(auth()->user()->balance ?? 0, 2) . ' MXN')
+                ->description('Saldo disponible')
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
 
-            Stat::make('Los pedidos se procesan con éxito', Order::where('status', 'completed')->count())
+            Stat::make('Pedidos con Éxito', Order::where('status', 'completed')->count())
                 ->description('Total finalizados')
                 ->color('success'),
 
-            Stat::make('Pedidos en proceso', Order::where('status', 'pending')->count())
-                ->description('Esperando revisión')
+            Stat::make('Pedidos en Proceso', Order::whereIn('status', ['pending', 'processing'])->count())
+                ->description('Activos')
                 ->color('warning'),
         ];
     }

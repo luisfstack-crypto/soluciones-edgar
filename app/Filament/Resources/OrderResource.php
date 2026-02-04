@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,34 +10,51 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\FileUpload;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationLabel = 'Pedidos';
+    protected static ?string $modelLabel = 'Pedido';
+    protected static ?string $pluralModelLabel = 'Pedidos';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('service_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->label('Usuario')
+                    ->required(),
+                Forms\Components\Select::make('service_id')
+                    ->relationship('service', 'name')
+                    ->label('Servicio')
+                    ->required(),
                 Forms\Components\TextInput::make('input_data')
+                    ->label('Datos (CURP/IMEI)')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('status')
+                Forms\Components\Select::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'pending' => 'Pendiente',
+                        'processing' => 'En Proceso',
+                        'completed' => 'Completado',
+                        'rejected' => 'Rechazado',
+                    ])
                     ->required()
-                    ->maxLength(255)
                     ->default('pending'),
-                Forms\Components\TextInput::make('result_file_path')
-                    ->maxLength(255),
+                Forms\Components\FileUpload::make('result_file_path')
+                    ->label('Archivo Resultado (PDF)')
+                    ->directory('order-results')
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->downloadable()
+                    ->openable(),
                 Forms\Components\Textarea::make('admin_notes')
+                    ->label('Notas del Admin')
                     ->columnSpanFull(),
             ]);
     }
@@ -47,38 +63,79 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('service_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('input_data')
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Usuario')
+                    ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('service.name')
+                    ->label('Servicio')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('service.price')
+                    ->label('Precio')
+                    ->money('MXN'),
                 Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('result_file_path')
-                    ->searchable(),
+                    ->label('Estado')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'gray',
+                        'processing' => 'info',
+                        'completed' => 'success',
+                        'rejected' => 'danger',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pending' => 'Pendiente',
+                        'processing' => 'En Proceso',
+                        'completed' => 'Completado',
+                        'rejected' => 'Rechazado',
+                        default => $state,
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Fecha')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Estado')
+                    ->options([
+                        'pending' => 'Pendiente',
+                        'processing' => 'En Proceso',
+                        'completed' => 'Completado',
+                        'rejected' => 'Rechazado',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('upload_result')
+                    ->label('Subir Resultado')
+                    ->icon('heroicon-m-arrow-up-tray')
+                    ->form([
+                        FileUpload::make('result_file_path')
+                            ->label('Archivo PDF')
+                            ->required()
+                            ->directory('order-results')
+                            ->acceptedFileTypes(['application/pdf']),
+                        Forms\Components\Textarea::make('admin_notes')
+                            ->label('Notas'),
+                    ])
+                    ->action(function (Order $record, array $data): void {
+                        $record->update([
+                            'result_file_path' => $data['result_file_path'],
+                            'admin_notes' => $data['admin_notes'] ?? $record->admin_notes,
+                            'status' => 'completed',
+                        ]);
+                    })
+                    ->visible(fn (Order $record) => $record->status !== 'completed'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array
