@@ -23,7 +23,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-30 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -35,7 +35,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-30 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -47,7 +47,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-30 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -59,7 +59,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-30 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -71,7 +71,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -83,7 +83,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true],
+                    ['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true, 'regex' => '/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/'],
                     ['name' => 'idcif', 'label' => 'IDCIF', 'type' => 'text', 'required' => true],
                 ],
             ],
@@ -96,7 +96,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-6 Horas',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true],
+                    ['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true, 'regex' => '/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/'],
                 ],
             ],
             [
@@ -108,7 +108,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -120,7 +120,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -144,7 +144,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -156,7 +156,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                 ],
             ],
             [
@@ -180,12 +180,12 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '5 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                     ['name' => 'names', 'label' => 'Nombres', 'type' => 'text', 'required' => true],
                     ['name' => 'paternal_surname', 'label' => 'Apellido Paterno', 'type' => 'text', 'required' => true],
                     ['name' => 'maternal_surname', 'label' => 'Apellido Materno', 'type' => 'text', 'required' => true],
                     ['name' => 'address', 'label' => 'Domicilio', 'type' => 'text', 'required' => true],
-                    ['name' => 'elector_key', 'label' => 'Clave Elector', 'type' => 'text', 'required' => true],
+                    ['name' => 'elector_key', 'label' => 'Clave Elector (18 caracteres)', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{6}\d{8}[HM]\d{3}$/'],
                 ],
             ],
             [
@@ -209,7 +209,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-20 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'nss', 'label' => 'NSS', 'type' => 'text', 'required' => true],
+                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/'],
                 ],
             ],
             [
@@ -221,7 +221,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-30 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'nss', 'label' => 'NSS', 'type' => 'text', 'required' => true],
+                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/'],
                 ],
             ],
             [
@@ -245,8 +245,8 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '10 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true],
-                    ['name' => 'year', 'label' => 'Año a Pagar', 'type' => 'text', 'required' => true],
+                    ['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/'],
+                    ['name' => 'year', 'label' => 'Año a Pagar', 'type' => 'text', 'required' => true, 'regex' => '/^\d{4}$/'],
                 ],
             ],
             [
@@ -258,7 +258,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '10 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true],
+                    ['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/'],
                 ],
             ],
             [
@@ -270,7 +270,7 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '1-20 Minutos',
                 'image_path' => null,
                 'form_schema' => [
-                    ['name' => 'plate', 'label' => 'Placa', 'type' => 'text', 'required' => true],
+                    ['name' => 'plate', 'label' => 'Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/'],
                 ],
             ],
         ];

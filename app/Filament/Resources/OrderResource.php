@@ -51,9 +51,15 @@ class OrderResource extends Resource
                         }
                         
                         return collect($service->form_schema)->map(function ($field) {
-                            return Forms\Components\TextInput::make("input_data.{$field['name']}")
+                            $input = Forms\Components\TextInput::make("input_data.{$field['name']}")
                                 ->label($field['label'])
                                 ->required($field['required'] ?? false);
+
+                            if (isset($field['regex'])) {
+                                $input->regex($field['regex']);
+                            }
+
+                            return $input;
                         })->toArray();
                     }),
                 Forms\Components\Select::make('status')

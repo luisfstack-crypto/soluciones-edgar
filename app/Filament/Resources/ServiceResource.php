@@ -125,9 +125,15 @@ class ServiceResource extends Resource
                     ->form(function (Service $record) {
                         if ($record->form_schema) {
                             return collect($record->form_schema)->map(function ($field) {
-                                return Forms\Components\TextInput::make($field['name'])
+                                $input = Forms\Components\TextInput::make($field['name'])
                                     ->label($field['label'])
                                     ->required($field['required'] ?? false);
+                                    
+                                if (isset($field['regex'])) {
+                                    $input->regex($field['regex']);
+                                }
+                                
+                                return $input;
                             })->toArray();
                         }
                         
