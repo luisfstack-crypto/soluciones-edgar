@@ -25,62 +25,75 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->label('Usuario')
-                    ->required(),
-                Forms\Components\Select::make('service_id')
-                    ->relationship('service', 'name')
-                    ->label('Servicio')
-                    ->required()
-                    ->live()
-                    ->afterStateUpdated(fn (Forms\Set $set) => $set('input_data', [])),
-                Forms\Components\Group::make()
-                    ->schema(function (Forms\Get $get) {
-                        $serviceId = $get('service_id');
-                        if (! $serviceId) {
-                            return [];
-                        }
-                        $service = \App\Models\Service::find($serviceId);
-                        if (! $service || ! $service->form_schema) {
-                             return [
-                                Forms\Components\TextInput::make('input_data.text')
-                                    ->label('Detalles adicionales')
-                                    ->required(),
-                            ];
-                        }
+                Forms\Components\Section::make('Información del Pedido')
+                    ->schema([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('user_id')
+                                    ->relationship('user', 'name')
+                                    ->label('Usuario')
+                                    ->required()
+                                    ->searchable(),
+                                Forms\Components\Select::make('service_id')
+                                    ->relationship('service', 'name')
+                                    ->label('Servicio')
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(fn (Forms\Set $set) => $set('input_data', [])),
+                            ]),
                         
-                        return collect($service->form_schema)->map(function ($field) {
-                            $input = Forms\Components\TextInput::make("input_data.{$field['name']}")
-                                ->label($field['label'])
-                                ->required($field['required'] ?? false);
+                        Forms\Components\Group::make()
+                            ->schema(function (Forms\Get $get) {
+                                $serviceId = $get('service_id');
+                                if (! $serviceId) {
+                                    return [];
+                                }
+                                $service = \App\Models\Service::find($serviceId);
+                                if (! $service || ! $service->form_schema) {
+                                     return [
+                                        Forms\Components\TextInput::make('input_data.text')
+                                            ->label('Detalles adicionales')
+                                            ->required(),
+                                    ];
+                                }
+                                
+                                return collect($service->form_schema)->map(function ($field) {
+                                    $input = Forms\Components\TextInput::make("input_data.{$field['name']}")
+                                        ->label($field['label'])
+                                        ->required($field['required'] ?? false);
+        
+                                    if (isset($field['regex'])) {
+                                        $input->regex($field['regex']);
+                                    }
+        
+                                    return $input;
+                                })->toArray();
+                            }),
+                    ]),
 
-                            if (isset($field['regex'])) {
-                                $input->regex($field['regex']);
-                            }
-
-                            return $input;
-                        })->toArray();
-                    }),
-                Forms\Components\Select::make('status')
-                    ->label('Estado')
-                    ->options([
-                        'pending' => 'Pendiente',
-                        'processing' => 'En Proceso',
-                        'completed' => 'Completado',
-                        'rejected' => 'Rechazado',
-                    ])
-                    ->required()
-                    ->default('pending'),
-                Forms\Components\FileUpload::make('result_file_path')
-                    ->label('Archivo Resultado (PDF)')
-                    ->directory('order-results')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->downloadable()
-                    ->openable(),
-                Forms\Components\Textarea::make('admin_notes')
-                    ->label('Notas del Admin')
-                    ->columnSpanFull(),
+                Forms\Components\Section::make('Estado y Entrega')
+                    ->schema([
+                        Forms\Components\Select::make('status')
+                            ->label('Estado')
+                            ->options([
+                                'pending' => 'Pendiente',
+                                'processing' => 'En Proceso',
+                                'completed' => 'Completado',
+                                'rejected' => 'Rechazado',
+                            ])
+                            ->required()
+                            ->default('pending')
+                            ->native(false),
+                        Forms\Components\FileUpload::make('result_file_path')
+                            ->label('Archivo Resultado (PDF)')
+                            ->directory('order-results')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->downloadable()
+                            ->openable(),
+                        Forms\Components\Textarea::make('admin_notes')
+                            ->label('Notas del Admin')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

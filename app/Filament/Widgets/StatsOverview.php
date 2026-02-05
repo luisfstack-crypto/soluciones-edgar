@@ -8,21 +8,28 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
+    protected static ?int $sort = 1;
+
     protected function getStats(): array
     {
         return [
-            Stat::make('Saldo Actual', '$' . number_format(auth()->user()->balance ?? 0, 2) . ' MXN')
-                ->description('Saldo disponible')
-                ->descriptionIcon('heroicon-m-banknotes')
-                ->color('success'),
+            Stat::make('Total de Pedidos', Order::count())
+                ->description('Todos los pedidos')
+                ->descriptionIcon('heroicon-m-shopping-bag')
+                ->color('primary')
+                ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
 
-            Stat::make('Pedidos con Éxito', Order::where('status', 'completed')->count())
-                ->description('Total finalizados')
-                ->color('success'),
+            Stat::make('Pedidos Completados', Order::where('status', 'completed')->count())
+                ->description('Pedidos finalizados')
+                ->descriptionIcon('heroicon-m-check-circle')
+                ->color('success')
+                ->chart([2, 5, 3, 7, 5, 8, 5]),
 
-            Stat::make('Pedidos en Proceso', Order::whereIn('status', ['pending', 'processing'])->count())
-                ->description('Activos')
-                ->color('warning'),
+            Stat::make('Pedidos Pendientes', Order::where('status', 'pending')->count())
+                ->description('Requieren atención')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color('warning')
+                ->chart([4, 2, 3, 1, 4, 2, 5]),
         ];
     }
 }

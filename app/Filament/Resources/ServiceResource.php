@@ -27,45 +27,69 @@ class ServiceResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('code')
-                    ->label('Código')
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('name')
-                    ->label('Nombre del Servicio')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('service_type')
-                    ->label('Tipo de Servicio')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\FileUpload::make('image_path')
-                    ->label('Imagen')
-                    ->image()
-                    ->directory('service-images'),
-                Forms\Components\Textarea::make('description')
-                    ->label('Descripción')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('price')
-                    ->label('Precio')
-                    ->required()
-                    ->numeric()
-                    ->prefix('$'),
-                Forms\Components\TextInput::make('active_schedule')
-                    ->label('Horario Activo')
-                    ->default('8:00 AM a 8:00 PM')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('processing_time')
-                    ->label('Tiempo de Procesamiento')
-                    ->placeholder('Ej: 1-2 horas')
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('is_active')
-                    ->label('Activo')
-                    ->default(true)
-                    ->required(),
+                Forms\Components\Section::make('Información Principal')
+                    ->description('Detalles básicos del servicio')
+                    ->schema([
+                        Forms\Components\Grid::make(3)
+                            ->schema([
+                                Forms\Components\TextInput::make('code')
+                                    ->label('Código')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('name')
+                                    ->label('Nombre del Servicio')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('service_type')
+                                    ->label('Tipo de Servicio')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\FileUpload::make('image_path')
+                                    ->label('Imagen')
+                                    ->image()
+                                    ->directory('service-images'),
+                            ]),
+                        Forms\Components\Textarea::make('description')
+                            ->label('Descripción')
+                            ->rows(3)
+                            ->maxLength(65535)
+                            ->columnSpanFull(),
+                    ]),
+
+                Forms\Components\Section::make('Precios y Tiempos')
+                    ->schema([
+                        Forms\Components\Grid::make(3)
+                            ->schema([
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Precio')
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('$'),
+                                Forms\Components\TextInput::make('processing_time')
+                                    ->label('Tiempo de Procesamiento')
+                                    ->placeholder('Ej: 1-2 horas')
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('active_schedule')
+                                    ->label('Horario Activo')
+                                    ->default('8:00 AM a 8:00 PM')
+                                    ->required()
+                                    ->maxLength(255),
+                            ]),
+                    ]),
+
+                Forms\Components\Section::make('Multimedia y Estado')
+                    ->schema([
+                        Forms\Components\FileUpload::make('image_path')
+                            ->label('Imagen del Servicio')
+                            ->image()
+                            ->directory('service-images')
+                            ->columnSpanFull(),
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Activo')
+                            ->default(true)
+                            ->required(),
+                    ]),
             ]);
     }
 
@@ -85,10 +109,12 @@ class ServiceResource extends Resource
                     Tables\Columns\TextColumn::make('code')
                         ->weight(FontWeight::Bold)
                         ->color('primary')
-                        ->size(Tables\Columns\TextColumn\TextColumnSize::Medium),
+                        ->size(Tables\Columns\TextColumn\TextColumnSize::Medium)
+                        ->searchable(),
                     Tables\Columns\TextColumn::make('name')
                         ->weight(FontWeight::Bold)
-                        ->size(Tables\Columns\TextColumn\TextColumnSize::Large),
+                        ->size(Tables\Columns\TextColumn\TextColumnSize::Large)
+                        ->searchable(),
                     Tables\Columns\TextColumn::make('service_type')
                         ->badge()
                         ->color('info'),
