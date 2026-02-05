@@ -27,10 +27,23 @@ class ServiceResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('code')
+                    ->label('Código')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('name')
                     ->label('Nombre del Servicio')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('service_type')
+                    ->label('Tipo de Servicio')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\FileUpload::make('image_path')
+                    ->label('Imagen')
+                    ->image()
+                    ->directory('service-images'),
                 Forms\Components\Textarea::make('description')
                     ->label('Descripción')
                     ->maxLength(65535)
@@ -65,10 +78,20 @@ class ServiceResource extends Resource
             ])
             ->columns([
                 Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\ImageColumn::make('image_path')
+                        ->label('Imagen')
+                        ->height('100%')
+                        ->width('100%'),
+                    Tables\Columns\TextColumn::make('code')
+                        ->weight(FontWeight::Bold)
+                        ->color('primary')
+                        ->size(Tables\Columns\TextColumn\TextColumnSize::Medium),
                     Tables\Columns\TextColumn::make('name')
                         ->weight(FontWeight::Bold)
                         ->size(Tables\Columns\TextColumn\TextColumnSize::Large),
-                        
+                    Tables\Columns\TextColumn::make('service_type')
+                        ->badge()
+                        ->color('info'),
                     Tables\Columns\TextColumn::make('description')
                         ->color('gray')
                         ->limit(100),
@@ -99,13 +122,21 @@ class ServiceResource extends Resource
                     ->label('SOLICITAR')
                     ->button()
                     ->color('primary')
-                    ->form([
-                        Forms\Components\Hidden::make('user_id')
-                            ->default(fn () => auth()->id()),
-                        Forms\Components\TextInput::make('input_data')
-                            ->label(fn (Service $record) => 'Ingresa tu ' . ($record->name == 'Liberación IMEI' ? 'IMEI' : 'CURP'))
-                            ->required(),
-                    ])
+                    ->form(function (Service $record) {
+                        if ($record->form_schema) {
+                            return collect($record->form_schema)->map(function ($field) {
+                                return Forms\Components\TextInput::make($field['name'])
+                                    ->label($field['label'])
+                                    ->required($field['required'] ?? false);
+                            })->toArray();
+                        }
+                        
+                        return [
+                            Forms\Components\TextInput::make('input_data')
+                                ->label('Información Requerida')
+                                ->required(),
+                        ];
+                    })
                     ->action(function (Service $record, array $data) {
                         $user = User::find(auth()->id());
                         
@@ -122,7 +153,7 @@ class ServiceResource extends Resource
                         
                         $user->orders()->create([
                             'service_id' => $record->id,
-                            'input_data' => $data['input_data'],
+                            'input_data' => $data,
                             'status' => 'pending',
                         ]);
 
@@ -135,6 +166,8 @@ class ServiceResource extends Resource
                     
                 Tables\Actions\EditAction::make(),
             ])
+            
+            ->defaultPaginationPageOption(50)
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

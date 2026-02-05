@@ -8,12 +8,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Service extends Model
 {
     protected $fillable = [
+        'code',
         'name', 
         'description', 
-        'price', 
-        'active_schedule', 
-        'processing_time', 
-        'is_active'
+        'price',
+        'service_type',
+        'schedule_notice',
+        'processing_time',
+        'image_path',
+        'is_active',
+        'active_schedule',
+        'form_schema'
+    ];
+
+    protected $casts = [
+        'form_schema' => 'array',
+        'is_active' => 'boolean',
+        'price' => 'decimal:2',
     ];
 
     public function orders(): HasMany

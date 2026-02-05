@@ -16,6 +16,10 @@ class Order extends Model
         'admin_notes',
     ];
 
+    protected $casts = [
+        'input_data' => 'array',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

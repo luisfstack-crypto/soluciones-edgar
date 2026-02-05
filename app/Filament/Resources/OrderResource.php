@@ -32,11 +32,30 @@ class OrderResource extends Resource
                 Forms\Components\Select::make('service_id')
                     ->relationship('service', 'name')
                     ->label('Servicio')
-                    ->required(),
-                Forms\Components\TextInput::make('input_data')
-                    ->label('Datos (CURP/IMEI)')
                     ->required()
-                    ->maxLength(255),
+                    ->live()
+                    ->afterStateUpdated(fn (Forms\Set $set) => $set('input_data', [])),
+                Forms\Components\Group::make()
+                    ->schema(function (Forms\Get $get) {
+                        $serviceId = $get('service_id');
+                        if (! $serviceId) {
+                            return [];
+                        }
+                        $service = \App\Models\Service::find($serviceId);
+                        if (! $service || ! $service->form_schema) {
+                             return [
+                                Forms\Components\TextInput::make('input_data.text')
+                                    ->label('Detalles adicionales')
+                                    ->required(),
+                            ];
+                        }
+                        
+                        return collect($service->form_schema)->map(function ($field) {
+                            return Forms\Components\TextInput::make("input_data.{$field['name']}")
+                                ->label($field['label'])
+                                ->required($field['required'] ?? false);
+                        })->toArray();
+                    }),
                 Forms\Components\Select::make('status')
                     ->label('Estado')
                     ->options([
