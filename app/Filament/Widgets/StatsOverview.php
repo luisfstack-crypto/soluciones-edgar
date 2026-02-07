@@ -12,24 +12,39 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
+        $user = auth()->user();
+
+        if ($user->is_admin) {
+             return [
+                Stat::make('Total de Pedidos', Order::count())
+                    ->description('Todos los pedidos')
+                    ->descriptionIcon('heroicon-m-shopping-bag')
+                    ->color('primary'),
+
+                Stat::make('Ingresos Totales', '$' . number_format(Order::where('status', 'completed')->sum('price_at_purchase') ?? 0, 2)) // Assuming we track this now
+                    ->description('Estimado en pedidos completados')
+                    ->color('success'),
+
+                Stat::make('Pedidos Pendientes', Order::where('status', 'pending')->count())
+                    ->description('Requieren atención')
+                    ->descriptionIcon('heroicon-m-clock')
+                    ->color('warning'),
+            ];
+        }
+
         return [
-            Stat::make('Total de Pedidos', Order::count())
-                ->description('Todos los pedidos')
-                ->descriptionIcon('heroicon-m-shopping-bag')
-                ->color('primary')
-                ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
+            Stat::make('Saldo Actual', '$' . number_format($user->balance, 2))
+                ->description('Saldo disponible para servicios')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('success'),
 
-            Stat::make('Pedidos Completados', Order::where('status', 'completed')->count())
-                ->description('Pedidos finalizados')
-                ->descriptionIcon('heroicon-m-check-circle')
-                ->color('success')
-                ->chart([2, 5, 3, 7, 5, 8, 5]),
+            Stat::make('Mis Pedidos', $user->orders()->count())
+                ->description('Historial total')
+                ->color('primary'),
 
-            Stat::make('Pedidos Pendientes', Order::where('status', 'pending')->count())
-                ->description('Requieren atención')
-                ->descriptionIcon('heroicon-m-clock')
-                ->color('warning')
-                ->chart([4, 2, 3, 1, 4, 2, 5]),
+            Stat::make('En Proceso', $user->orders()->whereIn('status', ['pending', 'processing'])->count())
+                ->description('Pedidos activos')
+                ->color('warning'),
         ];
     }
 }

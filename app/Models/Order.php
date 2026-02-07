@@ -14,6 +14,7 @@ class Order extends Model
         'status',
         'result_file_path',
         'admin_notes',
+        'price_at_purchase',
     ];
 
     protected $casts = [

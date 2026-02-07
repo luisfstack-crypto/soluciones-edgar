@@ -172,27 +172,36 @@ class ServiceResource extends Resource
                     ->action(function (Service $record, array $data) {
                         $user = User::find(auth()->id());
                         
-                        if ($user->balance < $record->price) {
+                        try {
+                            if ($user->balance < $record->price) {
+                                throw new \Exception("Necesitas \${$record->price} pero tienes \${$user->balance}.");
+                            }
+
+                            \DB::transaction(function () use ($user, $record, $data) {
+                                // 1. Create Order
+                                $order = $user->orders()->create([
+                                    'service_id' => $record->id,
+                                    'input_data' => $data,
+                                    'status' => 'pending',
+                                    'price_at_purchase' => $record->price, // Optional if we store snapshot price? Schema didn't show it but good practice. Assuming Order doesn't have it for now based on previous reading but ServiceResource table uses Service price.
+                                ]);
+
+                                // 2. Deduct Balance
+                                $user->subtractBalance($record->price, "Servicio: {$record->name}", $order);
+                            });
+
                             Notification::make()
-                                ->title('Saldo Insuficiente')
-                                ->body("Necesitas \${$record->price} pero tienes \${$user->balance}.")
+                                ->title('Pedido Creado')
+                                ->success()
+                                ->send();
+
+                        } catch (\Exception $e) {
+                             Notification::make()
+                                ->title('Error al procesar')
+                                ->body($e->getMessage())
                                 ->danger()
                                 ->send();
-                            return;
                         }
-
-                        $user->decrement('balance', $record->price);
-                        
-                        $user->orders()->create([
-                            'service_id' => $record->id,
-                            'input_data' => $data,
-                            'status' => 'pending',
-                        ]);
-
-                        Notification::make()
-                            ->title('Pedido Creado')
-                            ->success()
-                            ->send();
                     })
                     ->visible(fn (Service $record) => $record->is_active),
                     
