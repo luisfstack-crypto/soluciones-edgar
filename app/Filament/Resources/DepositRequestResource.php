@@ -3,15 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DepositRequestResource\Pages;
-use App\Filament\Resources\DepositRequestResource\RelationManagers;
 use App\Models\DepositRequest;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DepositRequestResource extends Resource
 {
@@ -29,16 +30,16 @@ class DepositRequestResource extends Resource
                     ->description('Por favor lea atentamente antes de continuar.')
                     ->schema([
                         Forms\Components\Placeholder::make('instructions')
-                            ->label('')
+                            ->hiddenLabel()
                             ->content(new \Illuminate\Support\HtmlString('
-                                <div class="p-4 bg-danger-500/10 border border-danger-500 rounded-lg text-danger-600 dark:text-danger-400">
+                                <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
                                     <h3 class="font-bold text-lg mb-2">IMPORTANTE</h3>
                                     <ul class="list-disc pl-5 space-y-1">
                                         <li>Monto Mínimo: <strong>$300.00 MXN</strong>. Envío menor causará pérdida de saldo.</li>
-                                        <li><strong>SOLO TRANSFERENCIAS ELECTRONICAS.</strong> No aceptamos depósitos en efectivo.</li>
+                                        <li><strong>SOLO TRANSFERENCIAS ELECTRÓNICAS.</strong> No aceptamos depósitos en efectivo.</li>
                                         <li>Debe registrar el abono el mismo día que realizó la transferencia.</li>
                                     </ul>
-                                    <div class="mt-4 p-2 bg-gray-100 dark:bg-gray-800 rounded">
+                                    <div class="mt-4 p-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
                                         <p><strong>Cuenta:</strong> 072180012770965706</p>
                                         <p><strong>Banco:</strong> Banorte</p>
                                         <p><strong>Beneficiario:</strong> Soluciones Edgar</p>
@@ -114,7 +115,8 @@ class DepositRequestResource extends Resource
                     ->color('success'),
                 Tables\Columns\ImageColumn::make('proof_image_path')
                     ->label('Comprobante')
-                    ->height(50),
+                    ->height(50)
+                    ->square(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
@@ -144,27 +146,49 @@ class DepositRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('approve')
-                    ->label('Aprobar')
+                    ->label('Aprobar y Abonar')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
+                    ->modalHeading('¿Aprobar Depósito?')
+                    ->modalDescription('Esta acción agregará el saldo inmediatamente a la cuenta del usuario. No se puede deshacer.')
                     ->visible(fn (DepositRequest $record) => $record->status === 'pending' && auth()->user()->is_admin)
                     ->action(function (DepositRequest $record) {
-                        \Illuminate\Support\Facades\DB::transaction(function () use ($record) {
-                            $record->user->addBalance(
-                                $record->amount, 
-                                'deposit', 
-                                "Recarga Aprobada (Ref: {$record->tracking_key})", 
-                                $record
-                            );
+                        // DB Transaction para seguridad financiera
+                        DB::transaction(function () use ($record) {
+                            // Bloqueo pesimista o doble verificación para evitar doble clic
+                            $freshRecord = DepositRequest::where('id', $record->id)->lockForUpdate()->first();
+
+                            if ($freshRecord->status !== 'pending') {
+                                Notification::make()
+                                    ->title('Error')
+                                    ->body('Esta solicitud ya fue procesada anteriormente.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            // Verifica si existe el método en el modelo User, si no, lo hace manual
+                            if (method_exists($freshRecord->user, 'addBalance')) {
+                                $freshRecord->user->addBalance(
+                                    $freshRecord->amount, 
+                                    'deposit', 
+                                    "Recarga Aprobada (Ref: {$freshRecord->tracking_key})", 
+                                    $freshRecord
+                                );
+                            } else {
+                                // Fallback si no existe el método addBalance
+                                $freshRecord->user->balance += $freshRecord->amount;
+                                $freshRecord->user->save();
+                            }
                             
-                            $record->update(['status' => 'approved']);
+                            $freshRecord->update(['status' => 'approved']);
+                            
+                            Notification::make()
+                                ->title('Depósito Aprobado')
+                                ->success()
+                                ->send();
                         });
-                        
-                        \Filament\Notifications\Notification::make()
-                            ->title('Depósito Aprobado')
-                            ->success()
-                            ->send();
                     }),
 
                 Tables\Actions\Action::make('reject')
@@ -183,7 +207,7 @@ class DepositRequestResource extends Resource
                             'admin_notes' => $data['reason']
                         ]);
                         
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title('Depósito Rechazado')
                             ->danger()
                             ->send();
@@ -192,9 +216,29 @@ class DepositRequestResource extends Resource
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([ // Only delete if pending? Or generic delete. I'll leave generic but maybe restricts
+                Tables\Actions\BulkActionGroup::make([
+                    // Modificamos el Delete para que NO deje borrar depósitos aprobados (historial financiero)
                     Tables\Actions\DeleteBulkAction::make()
-                        ->visible(fn () => auth()->user()->is_admin),
+                        ->visible(fn () => auth()->user()->is_admin)
+                        ->action(function (Collection $records) {
+                            $deletedCount = 0;
+                            foreach ($records as $record) {
+                                if ($record->status !== 'approved') {
+                                    $record->delete();
+                                    $deletedCount++;
+                                }
+                            }
+                            
+                            if ($deletedCount < $records->count()) {
+                                Notification::make()
+                                    ->title('Atención')
+                                    ->body('Algunos registros no se borraron porque ya estaban Aprobados. Solo se eliminaron pendientes/rechazados.')
+                                    ->warning()
+                                    ->send();
+                            } else {
+                                Notification::make()->title('Registros eliminados')->success()->send();
+                            }
+                        }),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

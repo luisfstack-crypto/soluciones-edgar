@@ -5,10 +5,11 @@ namespace App\Filament\Pages\Auth;
 use Filament\Pages\Auth\Register as BaseRegister;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\HtmlString;
+use Filament\Forms\Form;
 
 class Register extends BaseRegister
 {
-    public function form(\Filament\Forms\Form $form): \Filament\Forms\Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -32,5 +33,10 @@ class Register extends BaseRegister
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return auth()->user()->is_admin ? '/admin' : '/app';
     }
 }

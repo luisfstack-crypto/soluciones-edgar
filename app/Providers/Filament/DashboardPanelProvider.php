@@ -32,8 +32,6 @@ class DashboardPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Sky, // Fresh, Clean, Professional
             ])
-            ->topNavigation() // Clean Design
-            ->maxContentWidth(\Filament\Support\Enums\MaxWidth::Full)
             ->brandName('Soluciones Edgar')
             ->brandLogo(asset('images/logo.png'))
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
