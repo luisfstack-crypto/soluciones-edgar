@@ -154,9 +154,7 @@ class DepositRequestResource extends Resource
                     ->modalDescription('Esta acción agregará el saldo inmediatamente a la cuenta del usuario. No se puede deshacer.')
                     ->visible(fn (DepositRequest $record) => $record->status === 'pending' && auth()->user()->is_admin)
                     ->action(function (DepositRequest $record) {
-                        // DB Transaction para seguridad financiera
                         DB::transaction(function () use ($record) {
-                            // Bloqueo pesimista o doble verificación para evitar doble clic
                             $freshRecord = DepositRequest::where('id', $record->id)->lockForUpdate()->first();
 
                             if ($freshRecord->status !== 'pending') {
@@ -168,7 +166,6 @@ class DepositRequestResource extends Resource
                                 return;
                             }
 
-                            // Verifica si existe el método en el modelo User, si no, lo hace manual
                             if (method_exists($freshRecord->user, 'addBalance')) {
                                 $freshRecord->user->addBalance(
                                     $freshRecord->amount, 
@@ -177,7 +174,6 @@ class DepositRequestResource extends Resource
                                     $freshRecord
                                 );
                             } else {
-                                // Fallback si no existe el método addBalance
                                 $freshRecord->user->balance += $freshRecord->amount;
                                 $freshRecord->user->save();
                             }
@@ -217,7 +213,7 @@ class DepositRequestResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Modificamos el Delete para que NO deje borrar depósitos aprobados (historial financiero)
+                    
                     Tables\Actions\DeleteBulkAction::make()
                         ->visible(fn () => auth()->user()->is_admin)
                         ->action(function (Collection $records) {

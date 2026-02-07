@@ -99,7 +99,7 @@ class OrderResource extends Resource
                     ->label('Administrar')
                     ->icon('heroicon-m-pencil-square')
                     ->color('gray')
-                    ->url(fn (Service $record) => "/admin/services/{$record->id}/edit")
+                    ->url(fn (Order $record) => "/admin/orders/{$record->id}/edit")
                     ->visible(fn () => auth()->user()->is_admin),
 
                 Tables\Actions\Action::make('download')

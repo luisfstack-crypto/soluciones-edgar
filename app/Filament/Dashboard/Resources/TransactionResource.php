@@ -57,18 +57,24 @@ class TransactionResource extends Resource
                     })
                     ->color(fn (string $state): string => match ($state) {
                         'deposit' => 'success',
-                        'purchase' => 'gray',
-                        'refund' => 'success',
+                        'purchase' => 'gray', // Dashboard uses gray for purchase? Let's use danger if amount < 0 logic holds, or follow specific logic. Admin uses gray (purchase) and success (deposit/refund). Dashboard uses gray? 
+                        // Wait, Admin used: 'deposit' => 'success', 'purchase' => 'danger', 'refund' => 'warning' in Step 436.
+                        // Dashboard used: 'deposit' => 'success', 'purchase' => 'gray', 'refund' => 'success' in Step 435.
+                        // I will align to Admin logic as it's clearer.
+                        'deposit' => 'success',
+                        'purchase' => 'danger',
+                        'refund' => 'warning',
                         default => 'gray',
                     }),
-                Tables\Columns\TextColumn::make('amount')
-                    ->label('Monto')
-                    ->money('MXN')
-                    ->color(fn ($record) => $record->amount > 0 ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('description')
                     ->label('Descripción')
                     ->wrap()
                     ->limit(50),
+                Tables\Columns\TextColumn::make('amount')
+                    ->label('Monto')
+                    ->money('MXN')
+                    ->color(fn ($record) => $record->type === 'purchase' ? 'danger' : 'success')
+                    ->weight('bold'),
             ])
             ->actions([])
             ->bulkActions([])

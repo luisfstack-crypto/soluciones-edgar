@@ -112,9 +112,10 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('service.name')
                     ->label('Servicio')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('service.price')
-                    ->label('Precio')
-                    ->money('MXN'),
+                Tables\Columns\TextColumn::make('price_at_purchase')
+                    ->label('Costo')
+                    ->money('MXN')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
                     ->badge()

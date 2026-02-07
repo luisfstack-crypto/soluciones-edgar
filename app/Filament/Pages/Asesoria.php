@@ -15,6 +15,11 @@ class Asesoria extends Page
 
     public $client_name = '';
 
+    public function mount()
+    {
+        $this->client_name = auth()->user()->name ?? '';
+    }
+
     public function submit()
     {
         $this->validate([

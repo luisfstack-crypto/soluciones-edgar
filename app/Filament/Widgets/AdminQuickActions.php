@@ -7,7 +7,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminQuickActions extends BaseWidget
 {
-    protected static ?int $sort = 0; // First widget
+    protected static ?int $sort = 0;
 
     protected function getStats(): array
     {

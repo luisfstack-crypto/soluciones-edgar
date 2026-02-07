@@ -124,7 +124,10 @@ class BuyService extends Page implements HasForms
                 ->success()
                 ->send();
 
-            return redirect()->to('/app/services'); 
+            if ($user->is_admin) {
+                return redirect('/admin/services');
+            }
+            return redirect('/app/services'); 
             
         } catch (\Exception $e) {
              Notification::make()
