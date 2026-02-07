@@ -32,30 +32,64 @@ class DepositRequestResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Hidden::make('user_id')
-                    ->default(auth()->id()),
-                Forms\Components\Section::make('Detalles del Depósito')
+                Forms\Components\Section::make('Información Bancaria')
+                    ->description('Realiza tu transferencia a la siguiente cuenta y sube tu comprobante.')
                     ->schema([
-                        Forms\Components\Select::make('payment_method')
-                            ->label('Método de Pago')
-                            ->options([
-                                'bank_transfer' => 'Transferencia Bancaria',
-                                'cash_deposit' => 'Depósito en Efectivo',
-                            ])
-                            ->required(),
-                        Forms\Components\TextInput::make('amount')
-                            ->label('Monto')
-                            ->numeric()
-                            ->prefix('$')
-                            ->required(),
-                        Forms\Components\TextInput::make('transaction_id')
-                            ->label('Referencia / Folio')
-                            ->required(),
-                        Forms\Components\FileUpload::make('proof_file_path')
-                            ->label('Comprobante (Imagen/PDF)')
-                            ->directory('deposit-proofs')
-                            ->acceptedFileTypes(['image/*', 'application/pdf'])
-                            ->required(),
+                        Forms\Components\Placeholder::make('bank_details')
+                            ->label('')
+                            ->content(new \Illuminate\Support\HtmlString('
+                                <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <p class="text-gray-500">Banco:</p>
+                                            <p class="font-bold">Banorte</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-500">Beneficiario:</p>
+                                            <p class="font-bold">Soluciones Edgar</p>
+                                        </div>
+                                        <div class="col-span-2">
+                                            <p class="text-gray-500">CLAVE Interbancaria:</p>
+                                            <p class="font-bold text-lg tracking-wider">072180012770965706</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded text-xs text-amber-800 dark:text-amber-400">
+                                        <strong>Nota:</strong> Las recargas se procesan de lunes a domingo de 8:00 AM a 8:00 PM. Monto mínimo $300.00 MXN.
+                                    </div>
+                                </div>
+                            ')),
+                    ]),
+
+                Forms\Components\Section::make('Registrar Comprobante')
+                    ->schema([
+                        Forms\Components\Hidden::make('user_id')
+                            ->default(auth()->id()),
+
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\TextInput::make('bank_name')
+                                    ->label('Tu Banco')
+                                    ->placeholder('Ej: BBVA, Santander, OXXO...')
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('tracking_key')
+                                    ->label('Clave de Rastreo / Referencia')
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
+
+                                Forms\Components\TextInput::make('amount')
+                                    ->label('Monto Enviado')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->required()
+                                    ->minValue(300),
+
+                                Forms\Components\FileUpload::make('proof_image_path')
+                                    ->label('Captura del Comprobante')
+                                    ->directory('deposit-proofs')
+                                    ->image()
+                                    ->required(),
+                            ]),
                     ]),
             ]);
     }
@@ -71,13 +105,10 @@ class DepositRequestResource extends Resource
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Monto')
                     ->money('MXN'),
-                Tables\Columns\TextColumn::make('payment_method')
-                    ->label('Método')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'bank_transfer' => 'Transferencia',
-                        'cash_deposit' => 'Depósito',
-                        default => $state,
-                    }),
+                Tables\Columns\TextColumn::make('bank_name')
+                    ->label('Banco Emisor'),
+                Tables\Columns\TextColumn::make('tracking_key')
+                    ->label('Referencia/Rastreo'),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
                     ->badge()

@@ -10,35 +10,49 @@ class OrdersChart extends ChartWidget
 {
     protected static ?string $heading = 'Pedidos por Día (Última Semana)';
     protected static ?int $sort = 2;
-    protected int | string | array $columnSpan = 'full';
+    protected int | string | array $columnSpan = 6;
 
     protected function getData(): array
     {
-        // Calculate simple daily counts for the last 7 days using PHP to be database agnostic and safe
-        $data = [];
         $labels = [];
+        $pendingData = [];
+        $processingData = [];
+        $completedData = [];
         
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i);
-            $labels[] = $date->isoFormat('D MMM'); // e.g. "5 Feb"
+            $labels[] = $date->isoFormat('D MMM');
+            $dateStr = $date->format('Y-m-d');
             
-            // This is a bit N+1 but safe for small dashboard charts vs complex SQL aggregations that might crash with driver mismatches
-            $count = Order::whereDate('created_at', $date->format('Y-m-d'))->count();
-            $data[] = $count;
+            $pendingData[] = Order::where('status', 'pending')->whereDate('created_at', $dateStr)->count();
+            $processingData[] = Order::where('status', 'processing')->whereDate('created_at', $dateStr)->count();
+            $completedData[] = Order::where('status', 'completed')->whereDate('created_at', $dateStr)->count();
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Pedidos',
-                    'data' => $data,
-                    'borderColor' => '#4f46e5', // Indigo-600
-                    'backgroundColor' => 'rgba(79, 70, 229, 0.1)',
-                    'pointBackgroundColor' => '#4f46e5',
-                    'pointBorderColor' => '#ffffff',
-                    'pointHoverBackgroundColor' => '#ffffff',
-                    'pointHoverBorderColor' => '#4f46e5',
-                    'fill' => true,
+                    'label' => 'Completados',
+                    'data' => $completedData,
+                    'borderColor' => '#10b981', // green-500
+                    'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
+                    'fill' => 'start',
+                    'tension' => 0.4,
+                ],
+                [
+                    'label' => 'En Proceso',
+                    'data' => $processingData,
+                    'borderColor' => '#0ea5e9', // sky-500
+                    'backgroundColor' => 'rgba(14, 165, 233, 0.1)',
+                    'fill' => 'start',
+                    'tension' => 0.4,
+                ],
+                [
+                    'label' => 'Pendientes',
+                    'data' => $pendingData,
+                    'borderColor' => '#f59e0b', // amber-500
+                    'backgroundColor' => 'rgba(245, 158, 11, 0.1)',
+                    'fill' => 'start',
                     'tension' => 0.4,
                 ],
             ],

@@ -86,7 +86,7 @@ class BuyService extends Page implements HasForms
         $data = $this->form->getState();
         $user = auth()->user();
         
-        if ($user->balance < $this->service->price) {
+        if (! $user->is_admin && $user->balance < $this->service->price) {
              Notification::make()
                 ->title('Saldo Insuficiente')
                 ->body("No tienes saldo suficiente. Costo: \${$this->service->price}. Saldo: \${$user->balance}")
@@ -97,22 +97,22 @@ class BuyService extends Page implements HasForms
 
         try {
             DB::transaction(function () use ($user, $data) {
-                // Create Order
+
                 $order = \App\Models\Order::create([
                      'user_id' => $user->id,
                      'service_id' => $this->service->id,
                      'input_data' => $data['input_data'] ?? [],
                      'status' => 'pending',
+                     'price_at_purchase' => $this->service->price,
                 ]);
                 
-                // Deduct Balance
-                // Using the method from User model if available, otherwise manual
-                if (method_exists($user, 'subtractBalance')) {
-                    $user->subtractBalance($this->service->price, "Servicio: {$this->service->name}", $order);
-                } else {
-                     $user->balance -= $this->service->price;
-                     $user->save();
-                     // Log transaction if needed
+                if (! $user->is_admin) {
+                    if (method_exists($user, 'subtractBalance')) {
+                        $user->subtractBalance($this->service->price, "Servicio: {$this->service->name}", $order);
+                    } else {
+                        $user->balance -= $this->service->price;
+                        $user->save();
+                    }
                 }
             });
 

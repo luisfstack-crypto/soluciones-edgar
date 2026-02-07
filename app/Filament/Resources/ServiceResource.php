@@ -18,10 +18,12 @@ class ServiceResource extends Resource
 {
     protected static ?string $model = Service::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = 'Servicios';
+    protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
+    protected static ?string $navigationLabel = 'Servicios y Catálogo';
     protected static ?string $modelLabel = 'Servicio';
     protected static ?string $pluralModelLabel = 'Servicios';
+    protected static ?string $navigationGroup = 'Administración';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -48,6 +50,8 @@ class ServiceResource extends Resource
                                 Forms\Components\FileUpload::make('image_path')
                                     ->label('Imagen')
                                     ->image()
+                                    ->imageEditor()
+                                    ->columnSpan(1)
                                     ->directory('service-images'),
                             ]),
                         Forms\Components\Textarea::make('description')
@@ -83,6 +87,13 @@ class ServiceResource extends Resource
                         Forms\Components\FileUpload::make('image_path')
                             ->label('Imagen del Servicio')
                             ->image()
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                null,
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ])
                             ->directory('service-images')
                             ->columnSpanFull(),
                         Forms\Components\Toggle::make('is_active')
@@ -104,8 +115,7 @@ class ServiceResource extends Resource
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make('image_path')
                         ->label('Imagen')
-                        ->height('100%')
-                        ->width('100%'),
+                        ->extraImgAttributes(['class' => 'object-contain h-48 w-full bg-gray-50 dark:bg-gray-900']),
                     Tables\Columns\TextColumn::make('code')
                         ->weight(FontWeight::Bold)
                         ->color('primary')

@@ -20,6 +20,7 @@ class OrderResource extends Resource
     protected static ?string $navigationLabel = 'Pedidos';
     protected static ?string $modelLabel = 'Pedido';
     protected static ?string $pluralModelLabel = 'Pedidos';
+    protected static ?string $navigationGroup = 'Gestión Operativa';
 
     public static function form(Form $form): Form
     {

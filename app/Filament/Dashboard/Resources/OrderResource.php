@@ -95,6 +95,13 @@ class OrderResource extends Resource
                     ->sortable(),
             ])
             ->actions([
+                Tables\Actions\Action::make('manage')
+                    ->label('Administrar')
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('gray')
+                    ->url(fn (Service $record) => "/admin/services/{$record->id}/edit")
+                    ->visible(fn () => auth()->user()->is_admin),
+
                 Tables\Actions\Action::make('download')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-arrow-down-tray')

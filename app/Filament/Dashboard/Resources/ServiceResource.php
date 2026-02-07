@@ -41,7 +41,7 @@ class ServiceResource extends Resource
                     Tables\Columns\ImageColumn::make('image_path')
                         ->height('200px')
                         ->width('100%')
-                        ->extraImgAttributes(['class' => 'object-cover w-full h-full rounded-t-xl'])
+                        ->extraImgAttributes(['class' => 'object-contain w-full h-full bg-gray-50 dark:bg-gray-900 rounded-t-xl'])
                         ->defaultImageUrl(url('/images/logo.png')), // Fallback
                     
                     Tables\Columns\Layout\Stack::make([
@@ -71,8 +71,16 @@ class ServiceResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('edit')
+                    ->label('Editar Servicio')
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('gray')
+                    ->url(fn (Service $record) => "/admin/services/{$record->id}/edit")
+                    ->visible(fn () => auth()->user()->is_admin)
+                    ->extraAttributes(['class' => 'w-full justify-center mb-2 mx-4']),
+
                 Tables\Actions\Action::make('hire')
-                    ->label('Contratar Servicio')
+                    ->label(fn () => auth()->user()->is_admin ? 'Solicitar (Gratis)' : 'Contratar Servicio')
                     ->icon('heroicon-m-shopping-bag')
                     ->button()
                     ->size('lg')

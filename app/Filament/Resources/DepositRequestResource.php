@@ -17,7 +17,9 @@ class DepositRequestResource extends Resource
 {
     protected static ?string $model = DepositRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationLabel = 'Solicitudes de Saldo';
+    protected static ?string $navigationGroup = 'Administración';
 
     public static function form(Form $form): Form
     {
@@ -148,14 +150,16 @@ class DepositRequestResource extends Resource
                     ->requiresConfirmation()
                     ->visible(fn (DepositRequest $record) => $record->status === 'pending' && auth()->user()->is_admin)
                     ->action(function (DepositRequest $record) {
-                        $record->user->addBalance(
-                            $record->amount, 
-                            'deposit', 
-                            "Recarga Aprobada (Ref: {$record->tracking_key})", 
-                            $record
-                        );
-                        
-                        $record->update(['status' => 'approved']);
+                        \Illuminate\Support\Facades\DB::transaction(function () use ($record) {
+                            $record->user->addBalance(
+                                $record->amount, 
+                                'deposit', 
+                                "Recarga Aprobada (Ref: {$record->tracking_key})", 
+                                $record
+                            );
+                            
+                            $record->update(['status' => 'approved']);
+                        });
                         
                         \Filament\Notifications\Notification::make()
                             ->title('Depósito Aprobado')
