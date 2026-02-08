@@ -18,10 +18,11 @@ class DepositRequestResource extends Resource
     protected static ?string $model = DepositRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationLabel = 'Recargar Saldo';
+    protected static ?string $navigationLabel = 'Abonar Saldo';
     protected static ?string $modelLabel = 'Solicitud de Depósito';
     protected static ?string $pluralModelLabel = 'Solicitudes de Depósito';
-    protected static ?string $navigationGroup = 'Billetera';
+    protected static ?string $navigationGroup = 'Mi Billetera';
+    protected static ?int $navigationSort = 1;
 
     public static function getEloquentQuery(): Builder
     {

@@ -17,10 +17,11 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?string $navigationLabel = 'Pedidos';
-    protected static ?string $modelLabel = 'Pedido';
-    protected static ?string $pluralModelLabel = 'Pedidos';
-    protected static ?string $navigationGroup = 'Gestión Operativa';
+    protected static ?string $navigationLabel = 'Gestión de Trámites';
+    protected static ?string $modelLabel = 'Trámite';
+    protected static ?string $pluralModelLabel = 'Gestión de Trámites';
+    protected static ?string $navigationGroup = 'Operaciones';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -176,6 +177,11 @@ class OrderResource extends Resource
                 ]),
             ])
             ->defaultSort('created_at', 'desc');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes();
     }
 
     public static function getRelations(): array

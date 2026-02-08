@@ -18,10 +18,11 @@ class TransactionResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $navigationLabel = 'Historial';
+    protected static ?string $navigationLabel = 'Movimientos';
     protected static ?string $modelLabel = 'Transacción';
-    protected static ?string $pluralModelLabel = 'Historial de Transacciones';
-    protected static ?string $navigationGroup = 'Billetera';
+    protected static ?string $pluralModelLabel = 'Movimientos';
+    protected static ?string $navigationGroup = 'Mi Billetera';
+    protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
     {
@@ -56,11 +57,6 @@ class TransactionResource extends Resource
                         default => $state,
                     })
                     ->color(fn (string $state): string => match ($state) {
-                        'deposit' => 'success',
-                        'purchase' => 'gray', // Dashboard uses gray for purchase? Let's use danger if amount < 0 logic holds, or follow specific logic. Admin uses gray (purchase) and success (deposit/refund). Dashboard uses gray? 
-                        // Wait, Admin used: 'deposit' => 'success', 'purchase' => 'danger', 'refund' => 'warning' in Step 436.
-                        // Dashboard used: 'deposit' => 'success', 'purchase' => 'gray', 'refund' => 'success' in Step 435.
-                        // I will align to Admin logic as it's clearer.
                         'deposit' => 'success',
                         'purchase' => 'danger',
                         'refund' => 'warning',

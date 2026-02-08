@@ -3,8 +3,19 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/admin');
+    if (auth()->check()) {
+        if (auth()->user()->start_page && auth()->user()->start_page !== '/') {
+             return redirect(auth()->user()->start_page);
+        }
+        return auth()->user()->is_admin ? redirect('/admin') : redirect('/app');
+    }
+    return redirect('/app/login');
 });
+
+Route::get('/login', function () {
+    return redirect('/app/login');
+})->name('login'); 
+
 
 Route::get('/support/whatsapp', \App\Http\Controllers\SupportRedirectController::class)->middleware('auth')->name('support.whatsapp');
 

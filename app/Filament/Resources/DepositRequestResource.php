@@ -20,7 +20,10 @@ class DepositRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationLabel = 'Solicitudes de Saldo';
-    protected static ?string $navigationGroup = 'Administración';
+    protected static ?string $modelLabel = 'Solicitud de Depósito';
+    protected static ?string $pluralModelLabel = 'Solicitudes de Depósito';
+    protected static ?string $navigationGroup = 'Finanzas';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -116,7 +119,7 @@ class DepositRequestResource extends Resource
                 Tables\Columns\ImageColumn::make('proof_image_path')
                     ->label('Comprobante')
                     ->height(50)
-                    ->square(),
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
                     ->badge()
@@ -246,6 +249,8 @@ class DepositRequestResource extends Resource
 
         if (! auth()->user()->is_admin) {
             $query->where('user_id', auth()->id());
+        } else {
+             $query->withoutGlobalScopes();
         }
 
         return $query;

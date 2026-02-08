@@ -107,15 +107,6 @@ class BuyService extends Page implements HasForms
                      'status' => 'pending',
                      'price_at_purchase' => $this->service->price,
                 ]);
-                
-                if (! $user->is_admin) {
-                    if (method_exists($user, 'subtractBalance')) {
-                        $user->subtractBalance($this->service->price, "Servicio: {$this->service->name}", $order);
-                    } else {
-                        $user->balance -= $this->service->price;
-                        $user->save();
-                    }
-                }
             });
 
             Notification::make()

@@ -16,6 +16,7 @@
                 </div>
                 
                 <form wire:submit.prevent="submit" class="w-full">
+                    <button 
                         type="submit"
                         class="w-full py-4 px-6 text-white font-bold rounded-xl shadow-lg transform transition hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300"
                         style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);"

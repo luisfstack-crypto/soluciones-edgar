@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Dashboard\Pages;
 
 use Filament\Pages\Page;
 
@@ -10,6 +10,13 @@ class Asesoria extends Page
     protected static ?string $navigationLabel = 'Asesoría';
     protected static ?string $title = 'Asesoría en Línea';
     protected static ?string $slug = 'asesoria';
+    protected static ?string $navigationGroup = 'Ayuda';
+    protected static ?int $navigationSort = 3;
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ! auth()->user()->is_admin;
+    }
 
     protected static string $view = 'filament.pages.asesoria';
 

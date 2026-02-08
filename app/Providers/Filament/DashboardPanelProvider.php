@@ -24,13 +24,13 @@ class DashboardPanelProvider extends PanelProvider
     {
         return $panel
             ->id('dashboard')
-            ->path('app') // '/app' feels more "User Portal"
-            ->login()
+            ->path('app')
+            ->login(\App\Filament\Auth\Login::class)
             ->registration(\App\Filament\Pages\Auth\Register::class)
             ->profile()
             ->passwordReset()
             ->colors([
-                'primary' => Color::Sky, // Fresh, Clean, Professional
+                'primary' => Color::Sky,
             ])
             ->brandName('Soluciones Edgar')
             ->brandLogo(asset('images/logo.png'))
@@ -49,6 +49,14 @@ class DashboardPanelProvider extends PanelProvider
                 \App\Filament\Dashboard\Widgets\UserOrdersChart::class,
                 \App\Filament\Dashboard\Widgets\UserRecentActivity::class,
             ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::USER_MENU_BEFORE,
+                fn (): string => \Illuminate\Support\Facades\Blade::render(<<<'HTML'
+                    @if(auth()->check() && !auth()->user()->is_admin)
+                        @include('filament.components.header-balance')
+                    @endif
+                HTML)
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

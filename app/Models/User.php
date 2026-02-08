@@ -12,7 +12,6 @@ use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -39,8 +38,6 @@ class User extends Authenticatable implements FilamentUser
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -48,6 +45,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -58,6 +56,11 @@ class User extends Authenticatable implements FilamentUser
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function depositRequests()
+    {
+        return $this->hasMany(DepositRequest::class);
     }
 
     public function transactions()
@@ -81,8 +84,6 @@ class User extends Authenticatable implements FilamentUser
         });
     }
     
-    // I should create a more generic method or explicit creditDeposit/creditRefund
-    
     public function addBalance(float $amount, string $type, string $description, $reference = null)
     {
          return \DB::transaction(function () use ($amount, $type, $description, $reference) {
@@ -101,21 +102,14 @@ class User extends Authenticatable implements FilamentUser
     public function subtractBalance(float $amount, string $description, $reference = null)
     {
          return \DB::transaction(function () use ($amount, $description, $reference) {
-            if ($this->balance < $amount) {
+            if (! $this->is_admin && $this->balance < $amount) {
                 throw new \Exception('Saldo insuficiente');
             }
             $this->decrement('balance', $amount);
 
             return $this->transactions()->create([
                 'type' => 'purchase',
-                'amount' => -$amount, // Start recording as negative for display? Or keep absolute and use type? 
-                // Ledger usually keeps absolute and type determines sign. But `balance` calc might need query. 
-                // The `balance` column is the source of truth, transactions are history.
-                // storing absolute amount is fine if type is clear.
-                // However, seeing -$200 is clearer in a table. Let's store negative for purchases.
-                // But the requested 'Interface' just says "Pago de servicio X".
-                // I will store the amount passed.
-                'description' => $description,
+                'amount' => -$amount, 'description' => $description,
                 'reference_type' => $reference ? get_class($reference) : null,
                 'reference_id' => $reference ? $reference->id : null,
             ]);

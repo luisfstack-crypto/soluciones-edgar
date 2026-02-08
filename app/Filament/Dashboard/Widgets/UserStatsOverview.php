@@ -20,9 +20,12 @@ class UserStatsOverview extends BaseWidget
                 ->chart($isAdmin ? [10, 10, 10, 10, 10, 10, 10] : [10, 20, 15, 30, 25, 40, $user->balance])
                 ->color($isAdmin ? 'primary' : 'success'),
 
-            Stat::make('Pedidos en Proceso', $user->orders()->whereIn('status', ['pending', 'processing'])->count())
-                ->description('Estamos gestionando tus trámites')
-                ->descriptionIcon('heroicon-m-arrow-path')
+            Stat::make('Trámites en Curso', 
+                $user->orders()->whereIn('status', ['pending', 'processing'])->count() + 
+                $user->depositRequests()->where('status', 'pending')->count()
+            )
+                ->description('Servicios y recargas en proceso')
+                ->descriptionIcon('heroicon-m-clock')
                 ->chart([2, 4, 3, 5, 4, 6, 2])
                 ->color('warning'),
 

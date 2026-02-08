@@ -17,11 +17,12 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    protected static ?string $navigationLabel = 'Mis Pedidos';
-    protected static ?string $modelLabel = 'Pedido';
-    protected static ?string $pluralModelLabel = 'Mis Pedidos';
-    protected static ?string $navigationGroup = 'Gestión';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationLabel = 'Mis Trámites';
+    protected static ?string $modelLabel = 'Trámite';
+    protected static ?string $pluralModelLabel = 'Mis Trámites';
+    protected static ?string $navigationGroup = 'Operaciones';
+    protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
     {

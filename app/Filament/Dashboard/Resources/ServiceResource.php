@@ -14,10 +14,11 @@ class ServiceResource extends Resource
     protected static ?string $model = Service::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
-    protected static ?string $navigationLabel = 'Servicios';
+    protected static ?string $navigationLabel = 'Catálogo de Servicios';
     protected static ?string $modelLabel = 'Servicio';
     protected static ?string $pluralModelLabel = 'Servicios';
-    protected static ?string $navigationGroup = 'Gestión';
+    protected static ?string $navigationGroup = 'Operaciones';
+    protected static ?int $navigationSort = 1;
 
     public static function canCreate(): bool
     {
