@@ -168,6 +168,21 @@ class OrderResource extends Resource
                             'admin_notes' => $data['admin_notes'] ?? $record->admin_notes,
                             'status' => 'completed',
                         ]);
+
+                        try {
+                            \Illuminate\Support\Facades\Mail::to($record->user)->send(new \App\Mail\OrderCompleted($record));
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Trámite completado y correo enviado')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Trámite completado pero falló el envío del correo')
+                                ->body('Error: ' . $e->getMessage())
+                                ->warning()
+                                ->send();
+                        }
                     })
                     ->visible(fn (Order $record) => $record->status !== 'completed'),
             ])
