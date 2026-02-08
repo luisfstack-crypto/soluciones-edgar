@@ -28,6 +28,7 @@ class DashboardPanelProvider extends PanelProvider
             ->login(\App\Filament\Auth\Login::class)
             ->registration(\App\Filament\Pages\Auth\Register::class)
             ->profile()
+            ->emailVerification()
             ->passwordReset()
             ->colors([
                 'primary' => Color::Sky,

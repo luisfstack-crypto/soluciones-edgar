@@ -28,6 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(\App\Filament\Auth\Login::class)
             ->registration(\App\Filament\Pages\Auth\Register::class)
+            ->emailVerification()
+            ->passwordReset()
             ->brandName('Soluciones Edgar')
 
             ->brandLogo(asset('images/logo.png'))

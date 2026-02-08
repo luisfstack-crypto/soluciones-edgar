@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        if (auth()->user()->start_page && auth()->user()->start_page !== '/') {
-             return redirect(auth()->user()->start_page);
-        }
+
         return auth()->user()->is_admin ? redirect('/admin') : redirect('/app');
     }
     return redirect('/app/login');
