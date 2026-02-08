@@ -83,7 +83,8 @@ class DepositRequestResource extends Resource
                                     ->numeric()
                                     ->prefix('$')
                                     ->required()
-                                    ->minValue(300),
+                                    ->minValue(300)
+                                    ->rule('min:300'),
 
                                 Forms\Components\FileUpload::make('proof_image_path')
                                     ->label('Captura del Comprobante')
