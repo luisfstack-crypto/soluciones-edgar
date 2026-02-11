@@ -11,9 +11,12 @@ class OrderObserver
      */
     public function creating(Order $order): void
     {
-        // Snapshot price
         if ($order->service) {
-            $order->price_at_purchase = $order->service->price;
+            if (auth()->check() && auth()->user()->is_admin) {
+                $order->price_at_purchase = 0;
+            } else {
+                $order->price_at_purchase = $order->service->price;
+            }
         }
     }
 
@@ -22,8 +25,6 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        // Deduct Balance
-        // We do this in created so we have the Order ID for reference
         if ($order->price_at_purchase > 0) {
             try {
                 $order->user->subtractBalance(
@@ -32,8 +33,6 @@ class OrderObserver
                     $order
                 );
             } catch (\Exception $e) {
-                // This exception will rollback the transaction preventing order creation
-                // Filament should catch this and show the error message
                 throw $e;
             }
         }
@@ -54,13 +53,7 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        // Refund Logic
         if ($order->isDirty('status') && $order->status === 'rejected') {
-            // Ensure we don't refund if it was somehow already refunded (unlikely if status flow is strict, but good to be safe)
-            // Ideally we check transactions using reference, but simplistic check:
-            // Only refund if moving from a paid state.
-            
-            // Check if price > 0
             $refundAmount = $order->price_at_purchase ?? $order->service->price;
             
             if ($refundAmount > 0) {
@@ -78,8 +71,6 @@ class OrderObserver
             }
         }
 
-        // Email Logic
-        // Email Logic
         if ($order->isDirty('status') && $order->status === 'completed') {
             try {
                 \Illuminate\Support\Facades\Mail::to($order->user->email)
@@ -142,6 +133,5 @@ class OrderObserver
      */
     public function forceDeleted(Order $order): void
     {
-        //
     }
 }

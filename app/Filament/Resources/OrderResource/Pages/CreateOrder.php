@@ -22,7 +22,7 @@ class CreateOrder extends CreateRecord
              return $data; 
         }
 
-        if ($user->balance < $service->price) {
+        if ($user->balance < $service->price && !auth()->user()->is_admin) {
             Notification::make()
                 ->title('Saldo Insuficiente')
                 ->body("El usuario tiene \${$user->balance} pero el servicio cuesta \${$service->price}.")
@@ -32,9 +32,7 @@ class CreateOrder extends CreateRecord
             $this->halt();
         }
 
-        // Deduct balance
-        $user->decrement('balance', $service->price);
-
+        
         return $data;
     }
 }
