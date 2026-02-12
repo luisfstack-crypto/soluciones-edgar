@@ -27,6 +27,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Database\Eloquent\Model::shouldBeStrict();
+        \Illuminate\Database\Eloquent\Model::shouldBeStrict();
         \App\Models\Order::observe(\App\Observers\OrderObserver::class);
+
+        \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function ($notifiable, $url) {
+            \Illuminate\Support\Facades\Log::info('AppServiceProvider VerifyEmail callback triggered for: ' . $notifiable->email);
+            
+            return (new \Illuminate\Notifications\Messages\MailMessage)
+                ->subject('Verifica tu correo electrónico - Soluciones Edgar')
+                ->view('emails.auth.verify', ['url' => $url, 'user' => $notifiable]);
+        });
     }
 }

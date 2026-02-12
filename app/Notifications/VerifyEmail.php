@@ -40,7 +40,7 @@ class VerifyEmail extends BaseVerifyEmail
     public function toMail($notifiable): MailMessage
     {
         $verificationUrl = $this->verificationUrl($notifiable);
-        
+
         return (new MailMessage)
             ->subject('Verifica tu correo electrónico - Soluciones Edgar')
             ->view('emails.auth.verify', ['url' => $verificationUrl, 'user' => $notifiable]);

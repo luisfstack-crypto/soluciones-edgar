@@ -17,6 +17,7 @@
     </style>
 </head>
 <body>
+    <div class="container">
         <div class="header">
             @if(isset($message))
                 <img src="{{ $message->embed(public_path('images/logo.png')) }}" alt="Soluciones Edgar" style="height: 50px; width: auto;">
@@ -25,7 +26,7 @@
             @endif
         </div>
         <div class="content">
-            <h1>¡Bienvenido a la comunidad!</h1>
+            <h1>Confirmación de Cuenta</h1>
             <p>Hola <strong>{{ $user->name }}</strong>,</p>
             <p>Gracias por registrarte en Soluciones Edgar. Estamos emocionados de tenerte con nosotros.</p>
             <p>Para garantizar la seguridad de tu cuenta y acceder a todos nuestros servicios digitales, por favor verifica tu dirección de correo electrónico haciendo clic en el siguiente enlace:</p>

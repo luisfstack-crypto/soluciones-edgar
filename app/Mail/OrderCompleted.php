@@ -24,7 +24,7 @@ class OrderCompleted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pedido #' . $this->order->id . ' Completado - Soluciones Edgar',
+            subject: 'Tu trámite está listo - Soluciones Edgar',
         );
     }
 
