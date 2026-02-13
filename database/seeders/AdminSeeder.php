@@ -15,6 +15,8 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Edgar Solutions',
                 'password' => Hash::make('6O4J@M6$FNg4r5£l%:nO)U_Mv'),
+                'is_admin' => true, 
+                'email_verified_at' => now(), 
             ]
         );
     }
