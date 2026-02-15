@@ -39,20 +39,9 @@ class DepositRequestResource extends Resource
                         Forms\Components\Placeholder::make('bank_details')
                             ->label('')
                             ->content(new \Illuminate\Support\HtmlString('
-                                <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-                                    <div class="grid grid-cols-2 gap-4 text-sm">
-                                        <div>
-                                            <p class="text-gray-500">Banco:</p>
-                                            <p class="font-bold">Banorte</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-gray-500">Beneficiario:</p>
-                                            <p class="font-bold">Soluciones Edgar</p>
-                                        </div>
-                                        <div class="col-span-2">
-                                            <p class="text-gray-500">CLAVE Interbancaria:</p>
-                                            <p class="font-bold text-lg tracking-wider">072180012770965706</p>
-                                        </div>
+                                <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-100/50 border border-gray-200 dark:border-gray-700 text-center">
+                                    <div class="flex justify-center">
+                                        <img src="'.asset('images/pays.jpeg').'" alt="Instrucciones de Pago" class="mx-auto max-h-24 object-contain" />
                                     </div>
                                     <div class="mt-4 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded text-xs text-amber-800 dark:text-amber-400">
                                         <strong>Nota:</strong> Las recargas se procesan de lunes a domingo de 8:00 AM a 8:00 PM. Monto mínimo $300.00 MXN.
