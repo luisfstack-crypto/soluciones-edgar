@@ -66,42 +66,6 @@ class AdminPanelProvider extends PanelProvider
                     </a>
                 ',
             )
-            ->renderHook(
-                'panels::head.end',
-                fn (): string => "
-                    <style>
-                        .fi-main-ctn .fi-section, .fi-widget {
-                            border-color: #e0e7ff !important; /* light indigo-100 */
-                            transition: all 0.2s ease;
-                        }
-                        .dark .fi-main-ctn .fi-section, .dark .fi-widget {
-                            border-color: rgba(99, 102, 241, 0.2) !important; /* dark indigo/primary */
-                        }
-
-                        .fi-topbar {
-                            height: 4.5rem !important;
-                            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-                        }
-                        .fi-topbar-content {
-                            height: 4.5rem !important;
-                            padding-top: 0.5rem;
-                            padding-bottom: 0.5rem;
-                        }
-                        .fi-logo {
-                            height: 3rem !important;
-                            width: auto !important;
-                        }
-                        .fi-topbar-nav-list, .fi-user-menu {
-                            align-self: center !important;
-                            margin-top: 0.5rem;
-                            margin-bottom: 0.5rem;
-                        }
-                        .fi-topbar {
-                            border-bottom-color: rgb(229, 231, 235) !important;
-                        }
-                    </style>
-                ",
-            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
