@@ -143,7 +143,11 @@ class OrderResource extends Resource
                 Tables\Actions\ExportAction::make()
                     ->exporter(\App\Filament\Exports\OrderExporter::class)
                     ->label('Exportar Reporte')
-                    ->icon('heroicon-o-arrow-down-tray'),
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->formats([
+                        \Filament\Actions\Exports\Enums\ExportFormat::Xlsx,
+                        \Filament\Actions\Exports\Enums\ExportFormat::Csv,
+                    ]),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
