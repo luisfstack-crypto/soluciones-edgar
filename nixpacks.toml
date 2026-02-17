@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Packages.composer", "nodejs_20"]
+
+[phases.build]
+cmds = [
+    "mkdir -p bootstrap/cache storage/framework/sessions storage/framework/views storage/framework/cache",
+    "npm install",
+    "npm run build",
+    "composer install --no-dev --optimize-autoloader --no-interaction --no-progress",
+    "php artisan config:cache",
+    "php artisan event:cache",
+    "php artisan route:cache",
+    "php artisan view:cache",
+]
+
+[start]
+cmd = "php artisan migrate --force && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=$PORT"
