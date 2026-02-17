@@ -158,6 +158,7 @@ class DepositRequestResource extends Resource
                     ->visible(fn (DepositRequest $record) => $record->status === 'pending' && auth()->user()->is_admin)
                     ->action(function (DepositRequest $record) {
                         DB::transaction(function () use ($record) {
+                            // Lock record to prevent race conditions
                             $freshRecord = DepositRequest::where('id', $record->id)->lockForUpdate()->first();
 
                             if ($freshRecord->status !== 'pending') {
@@ -169,18 +170,7 @@ class DepositRequestResource extends Resource
                                 return;
                             }
 
-                            if (method_exists($freshRecord->user, 'addBalance')) {
-                                $freshRecord->user->addBalance(
-                                    $freshRecord->amount, 
-                                    'deposit', 
-                                    "Recarga Aprobada (Ref: {$freshRecord->tracking_key})", 
-                                    $freshRecord
-                                );
-                            } else {
-                                $freshRecord->user->balance += $freshRecord->amount;
-                                $freshRecord->user->save();
-                            }
-                            
+                            // Update status - The DepositRequestObserver will handle balance addition and user notification
                             $freshRecord->update(['status' => 'approved']);
                             
                             Notification::make()

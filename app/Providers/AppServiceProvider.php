@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Database\Eloquent\Model::shouldBeStrict();
         \App\Models\Order::observe(\App\Observers\OrderObserver::class);
+        \App\Models\DepositRequest::observe(\App\Observers\DepositRequestObserver::class);
 
         \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function ($notifiable, $url) {
             \Illuminate\Support\Facades\Log::info('AppServiceProvider VerifyEmail callback triggered for: ' . $notifiable->email);

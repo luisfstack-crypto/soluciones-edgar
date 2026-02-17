@@ -46,6 +46,18 @@ class OrderObserver
             'properties' => $order->toArray(),
             'ip_address' => request()->ip(),
         ]);
+
+        // Notify Admins
+        \Filament\Notifications\Notification::make()
+            ->title('Nuevo Pedido Recibido')
+            ->body("Usuario: {$order->user->name}. Servicio: {$order->service->name}")
+            ->success()
+            ->actions([
+                \Filament\Notifications\Actions\Action::make('view')
+                    ->label('Ver Pedido')
+                    ->url('/admin/orders/' . $order->id . '/edit')
+            ])
+            ->sendToDatabase(\App\Models\User::where('is_admin', true)->get());
     }
 
     /**
@@ -156,7 +168,37 @@ class OrderObserver
      */
     public function deleted(Order $order): void
     {
-        //
+        // If order was paid (price > 0)
+        // Check if it wasn't already rejected (which refunds automatically)
+        if (($order->price_at_purchase > 0) && $order->status !== 'rejected') {
+             try {
+                 $refundAmount = $order->price_at_purchase;
+                 
+                 $order->user->credit(
+                    $refundAmount, 
+                    "Reembolso por pedido eliminado #{$order->id}",
+                    null // Since order is deleted, we can't link it? Or maybe we can link the model before deletion? It's soft deleted? If hard deleted, ID is gone from DB?
+                    // Actually, if it's "deleted" event, record is gone (unless soft deleted).
+                    // We can pass null for subject if we don't want constraints.
+                );
+                
+                \Filament\Notifications\Notification::make()
+                    ->title('Pedido Eliminado y Reembolsado')
+                    ->body("Tu pedido de {$order->service->name} ha sido eliminado por un administrador. Se han devuelto \${$refundAmount} a tu cuenta.")
+                    ->warning() // Use warning or danger
+                    ->sendToDatabase($order->user);
+
+            } catch (\Exception $e) {
+                \Log::error("Error refunding deleted order {$order->id}: " . $e->getMessage());
+            }
+        } else {
+            // Just notify
+             \Filament\Notifications\Notification::make()
+                ->title('Pedido Eliminado')
+                ->body("Tu pedido de {$order->service->name} ha sido eliminado por el administrador.")
+                ->danger()
+                ->sendToDatabase($order->user);
+        }
     }
 
     /**
