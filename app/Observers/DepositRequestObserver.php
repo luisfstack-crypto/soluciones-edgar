@@ -53,7 +53,7 @@ class DepositRequestObserver
                 ->actions([
                     Action::make('view')
                         ->label('Ver Mi Billetera')
-                        ->url('/app/wallet')
+                        ->url('/app/movements')
                 ])
                 ->sendToDatabase($depositRequest->user);
         }

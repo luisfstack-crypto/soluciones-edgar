@@ -22,6 +22,7 @@ class TransactionResource extends Resource
     protected static ?string $modelLabel = 'Transacción';
     protected static ?string $pluralModelLabel = 'Movimientos';
     protected static ?string $navigationGroup = 'Mi Billetera';
+    protected static ?string $slug = 'movements';
     protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
