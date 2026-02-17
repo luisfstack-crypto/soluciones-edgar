@@ -15,6 +15,8 @@ class Order extends Model
         'result_file_path',
         'admin_notes',
         'price_at_purchase',
+        'service_cost_snapshot',
+        'service_price_snapshot',
     ];
 
     protected $casts = [

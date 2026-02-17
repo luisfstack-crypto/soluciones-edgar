@@ -12,6 +12,9 @@ class OrderObserver
     public function creating(Order $order): void
     {
         if ($order->service) {
+            $order->service_price_snapshot = $order->service->price;
+            $order->service_cost_snapshot = $order->service->cost ?? 0;
+
             if (auth()->check() && auth()->user()->is_admin) {
                 $order->price_at_purchase = 0;
             } else {
@@ -47,7 +50,6 @@ class OrderObserver
             'ip_address' => request()->ip(),
         ]);
 
-        // Notify Admins
         \Filament\Notifications\Notification::make()
             ->title('Nuevo Pedido Recibido')
             ->body("Usuario: {$order->user->name}. Servicio: {$order->service->name}")
@@ -168,8 +170,6 @@ class OrderObserver
      */
     public function deleted(Order $order): void
     {
-        // If order was paid (price > 0)
-        // Check if it wasn't already rejected (which refunds automatically)
         if (($order->price_at_purchase > 0) && $order->status !== 'rejected') {
              try {
                  $refundAmount = $order->price_at_purchase;
@@ -177,9 +177,7 @@ class OrderObserver
                  $order->user->credit(
                     $refundAmount, 
                     "Reembolso por pedido eliminado #{$order->id}",
-                    null // Since order is deleted, we can't link it? Or maybe we can link the model before deletion? It's soft deleted? If hard deleted, ID is gone from DB?
-                    // Actually, if it's "deleted" event, record is gone (unless soft deleted).
-                    // We can pass null for subject if we don't want constraints.
+                    null 
                 );
                 
                 \Filament\Notifications\Notification::make()

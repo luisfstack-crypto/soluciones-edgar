@@ -30,6 +30,25 @@ class Register extends BaseRegister
                     ')),
                 $this->getNameFormComponent(),
                 $this->getEmailFormComponent(),
+                \Filament\Forms\Components\TextInput::make('phone')
+                    ->label('Teléfono de Contacto')
+                    ->tel()
+                    ->required()
+                    ->maxLength(20),
+                \Filament\Forms\Components\Select::make('account_type')
+                    ->label('Tipo de Cuenta')
+                    ->options([
+                        'personal' => 'Personal',
+                        'company' => 'Empresa / Negocio',
+                    ])
+                    ->default('personal')
+                    ->live()
+                    ->required(),
+                \Filament\Forms\Components\TextInput::make('company_name')
+                    ->label('Nombre de la Empresa')
+                    ->visible(fn (\Filament\Forms\Get $get) => $get('account_type') === 'company')
+                    ->required(fn (\Filament\Forms\Get $get) => $get('account_type') === 'company')
+                    ->maxLength(255),
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
             ]);

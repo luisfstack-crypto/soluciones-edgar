@@ -139,6 +139,12 @@ class OrderResource extends Resource
                     ->dateTime()
                     ->sortable(),
             ])
+            ->headerActions([
+                Tables\Actions\ExportAction::make()
+                    ->exporter(\App\Filament\Exports\OrderExporter::class)
+                    ->label('Exportar Reporte')
+                    ->icon('heroicon-o-arrow-down-tray'),
+            ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Estado')

@@ -12,6 +12,7 @@ class Service extends Model
         'name', 
         'description', 
         'price',
+        'cost',
         'service_type',
         'schedule_notice',
         'processing_time',

@@ -39,7 +39,6 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                // Read-only view if viewed
                  Forms\Components\Section::make('Detalles del Pedido')
                     ->schema([
                         Forms\Components\TextInput::make('service.name')
@@ -94,6 +93,12 @@ class OrderResource extends Resource
                     ->label('Fecha')
                     ->dateTime()
                     ->sortable(),
+            ])
+            ->headerActions([
+                Tables\Actions\ExportAction::make()
+                    ->exporter(\App\Filament\Exports\OrderExporter::class)
+                    ->label('Exportar mis trámites')
+                    ->icon('heroicon-o-arrow-down-tray'),
             ])
             ->actions([
                 Tables\Actions\Action::make('manage')
