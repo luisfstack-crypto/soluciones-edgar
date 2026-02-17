@@ -23,6 +23,17 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         $this->notify(new \App\Notifications\VerifyEmail);
     }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string 
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -47,7 +58,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     ];
 
     /**
-     * @return array<string, string>
+     * @return array<string, 
      */
     protected function casts(): array
     {

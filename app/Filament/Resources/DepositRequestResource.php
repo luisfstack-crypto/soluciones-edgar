@@ -35,17 +35,13 @@ class DepositRequestResource extends Resource
                         Forms\Components\Placeholder::make('instructions')
                             ->hiddenLabel()
                             ->content(new \Illuminate\Support\HtmlString('
-                                <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
-                                    <h3 class="font-bold text-lg mb-2">IMPORTANTE</h3>
-                                    <ul class="list-disc pl-5 space-y-1">
-                                        <li>Monto Mínimo: <strong>$300.00 MXN</strong>. Envío menor causará pérdida de saldo.</li>
-                                        <li><strong>SOLO TRANSFERENCIAS ELECTRÓNICAS.</strong> No aceptamos depósitos en efectivo.</li>
-                                        <li>Debe registrar el abono el mismo día que realizó la transferencia.</li>
-                                    </ul>
-                                    <div class="mt-4 p-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-                                        <p><strong>Cuenta:</strong> 072180012770965706</p>
-                                        <p><strong>Banco:</strong> Banorte</p>
-                                        <p><strong>Beneficiario:</strong> Soluciones Edgar</p>
+                                <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-100/50 border border-gray-200 dark:border-gray-700 text-center">
+                                    <h3 class="font-bold text-lg mb-4 text-gray-800 dark:text-gray-200">Datos de Transferencia</h3>
+                                    <div class="flex justify-center">
+                                        <img src="'.asset('images/pays.jpeg').'" alt="Instrucciones de Pago" class="mx-auto w-full max-w-2xl object-contain rounded-lg shadow-sm" />
+                                    </div>
+                                    <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-400 font-medium">
+                                        <strong>IMPORTANTE:</strong> Monto mínimo $300.00 MXN. Envío menor causará pérdida de saldo. Solo transferencias electrónicas.
                                     </div>
                                 </div>
                             '))

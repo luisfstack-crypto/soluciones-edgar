@@ -41,9 +41,9 @@ class DepositRequestResource extends Resource
                             ->content(new \Illuminate\Support\HtmlString('
                                 <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-100/50 border border-gray-200 dark:border-gray-700 text-center">
                                     <div class="flex justify-center">
-                                        <img src="'.asset('images/pays.jpeg').'" alt="Instrucciones de Pago" class="mx-auto max-h-24 object-contain" />
+                                        <img src="'.asset('images/pays.jpeg').'" alt="Instrucciones de Pago" class="mx-auto w-full max-w-2xl object-contain rounded-lg shadow-sm" />
                                     </div>
-                                    <div class="mt-4 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded text-xs text-amber-800 dark:text-amber-400">
+                                    <div class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded text-sm text-amber-800 dark:text-amber-400 font-medium">
                                         <strong>Nota:</strong> Las recargas se procesan de lunes a domingo de 8:00 AM a 8:00 PM. Monto mínimo $300.00 MXN.
                                     </div>
                                 </div>
