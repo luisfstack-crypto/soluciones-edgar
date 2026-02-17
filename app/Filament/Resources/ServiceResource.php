@@ -143,6 +143,15 @@ class ServiceResource extends Resource
                          ->color('gray')
                          ->size(Tables\Columns\TextColumn\TextColumnSize::Small),
 
+                    Tables\Columns\TextColumn::make('pending')
+                         ->counts('orders', fn (Builder $query) => $query->whereIn('status', ['pending', 'processing']))
+                         ->label('Atención Requerida')
+                         ->badge()
+                         ->icon(fn ($state) => $state > 0 ? 'heroicon-m-bell-alert' : 'heroicon-m-check-circle')
+                         ->color(fn ($state) => $state > 0 ? 'danger' : 'success')
+                         ->formatStateUsing(fn ($state) => $state > 0 ? "{$state} Pendientes" : "Sin pendientes")
+                         ->extraAttributes(fn ($state) => $state > 0 ? ['class' => 'animate-pulse font-bold'] : []),
+
                     Tables\Columns\TextColumn::make('price')
                         ->money('MXN')
                         ->weight(FontWeight::Bold)

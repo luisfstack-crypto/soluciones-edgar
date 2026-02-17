@@ -38,11 +38,11 @@ class OrderCompleted extends Mailable
     public function attachments(): array
     {
         if ($this->order->result_file_path) {
-            $path = storage_path('app/public/' . $this->order->result_file_path);
-
-            if (file_exists($path)) {
+            $disk = config('filesystems.default', 'local');
+            
+            if (\Illuminate\Support\Facades\Storage::disk($disk)->exists($this->order->result_file_path)) {
                 return [
-                    Attachment::fromPath($path)
+                    Attachment::fromStorageDisk($disk, $this->order->result_file_path)
                         ->as('Resultado_Pedido_' . $this->order->id . '.pdf')
                         ->withMime('application/pdf'),
                 ];

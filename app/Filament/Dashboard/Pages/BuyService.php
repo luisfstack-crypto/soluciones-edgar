@@ -107,13 +107,28 @@ class BuyService extends Page implements HasForms
                      'status' => 'pending',
                      'price_at_purchase' => $this->service->price,
                 ]);
+                
+                $admins = \App\Models\User::where('is_admin', true)->get();
+                foreach ($admins as $admin) {
+                    Notification::make()
+                        ->title('Nuevo Pedido Registrado')
+                        ->body("El usuario {$user->name} ha solicitado el servicio {$this->service->name}.")
+                        ->info()
+                        ->actions([
+                            \Filament\Notifications\Actions\Action::make('view')
+                                ->label('Ver Pedido')
+                                ->url("/admin/orders/{$order->id}/edit")
+                        ])
+                        ->sendToDatabase($admin);
+                }
             });
 
             Notification::make()
                 ->title('¡Servicio Contratado!')
                 ->body('Tu pedido ha sido creado exitosamente. Un administrador lo revisará pronto.')
                 ->success()
-                ->send();
+                ->send()
+                ->sendToDatabase($user);
 
             if ($user->is_admin) {
                 return redirect('/admin/services');

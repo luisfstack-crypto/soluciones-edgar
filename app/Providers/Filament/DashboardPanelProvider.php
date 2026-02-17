@@ -38,6 +38,8 @@ class DashboardPanelProvider extends PanelProvider
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('favicon.ico'))
+            ->databaseNotifications()
+            ->viteTheme('resources/css/app.css')
             ->discoverResources(in: app_path('Filament/Dashboard/Resources'), for: 'App\\Filament\\Dashboard\\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\\Filament\\Dashboard\\Pages')
             ->pages([

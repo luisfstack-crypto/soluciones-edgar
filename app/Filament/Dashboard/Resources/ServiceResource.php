@@ -43,13 +43,14 @@ class ServiceResource extends Resource
                         ->height('200px')
                         ->width('100%')
                         ->extraImgAttributes(['class' => 'object-contain w-full h-full bg-gray-50 dark:bg-gray-900 rounded-t-xl'])
-                        ->defaultImageUrl(url('/images/logo.png')), // Fallback
+                        ->defaultImageUrl(url('/images/logo.png')),
                     
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('name')
                             ->weight('bold')
                             ->size(Tables\Columns\TextColumn\TextColumnSize::Large)
-                            ->color('primary'),
+                            ->color('primary')
+                            ->searchable(),
                             
                         Tables\Columns\TextColumn::make('price')
                             ->money('MXN')
@@ -64,12 +65,12 @@ class ServiceResource extends Resource
                         Tables\Columns\TextColumn::make('description')
                             ->limit(80)
                             ->color('gray')
-                            ->size('sm'),
+                            ->size('sm')
+                            ->searchable(),
                     ])->space(2)->extraAttributes(['class' => 'p-5']),
-                ])->space(0)->extraAttributes(['class' => 'bg-white dark:bg-gray-800 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 overflow-hidden']),
+                ])->space(0)->extraAttributes(['class' => 'bg-white dark:bg-gray-800 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 overflow-hidden transform transition hover:shadow-lg hover:-translate-y-1 duration-300']),
             ])
             ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\Action::make('edit')

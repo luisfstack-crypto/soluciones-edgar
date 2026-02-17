@@ -88,6 +88,7 @@ class OrderResource extends Resource
                             ->native(false),
                         Forms\Components\FileUpload::make('result_file_path')
                             ->label('Archivo Resultado (PDF)')
+                            ->disk('public')
                             ->directory('order-results')
                             ->acceptedFileTypes(['application/pdf'])
                             ->downloadable()
@@ -157,6 +158,7 @@ class OrderResource extends Resource
                         FileUpload::make('result_file_path')
                             ->label('Archivo PDF')
                             ->required()
+                            ->disk('public')
                             ->directory('order-results')
                             ->acceptedFileTypes(['application/pdf']),
                         Forms\Components\Textarea::make('admin_notes')

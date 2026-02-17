@@ -83,12 +83,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             $this->increment('balance', $amount);
 
             return $this->transactions()->create([
-                'type' => 'deposit',
                 'amount' => $amount,
                 'description' => $description,
                 'reference_type' => $reference ? get_class($reference) : null,
                 'reference_id' => $reference ? $reference->id : null,
-                'type' => $reference instanceof \App\Models\DepositRequest ? 'deposit' : 'refund', // Simple inference or add param
+                'type' => ($reference instanceof \App\Models\DepositRequest) ? 'deposit' : 'refund',
             ]);
         });
     }

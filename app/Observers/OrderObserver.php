@@ -51,33 +51,74 @@ class OrderObserver
     /**
      * Handle the Order "updated" event.
      */
-    public function updated(Order $order): void
+     public function updated(Order $order): void
     {
-        if ($order->isDirty('status') && $order->status === 'rejected') {
+        if ($order->wasChanged('status') && $order->status === 'rejected') {
             $refundAmount = $order->price_at_purchase ?? $order->service->price;
             
             if ($refundAmount > 0) {
-                 $order->user->credit(
-                    $refundAmount, 
-                    "Reembolso por pedido #{$order->id} (Servicio no disponible/Rechazado)",
-                    $order
-                );
-                
-                \Filament\Notifications\Notification::make()
-                    ->title('Reembolso Procesado')
-                    ->body("Se han devuelto \${$refundAmount} al usuario.")
-                    ->success()
-                    ->sendToDatabase(\App\Models\User::where('is_admin', true)->get());
+                try {
+                     $order->user->credit(
+                        $refundAmount, 
+                        "Reembolso por pedido #{$order->id} (Servicio no disponible/Rechazado)",
+                        $order
+                    );
+                    
+                    \Filament\Notifications\Notification::make()
+                        ->title('Reembolso Procesado')
+                        ->body("Se han devuelto \${$refundAmount} al usuario {$order->user->name}.")
+                        ->success()
+                        ->sendToDatabase(\App\Models\User::where('is_admin', true)->get());
+
+                    \Filament\Notifications\Notification::make()
+                        ->title('Pedido Rechazado y Reembolsado')
+                        ->body("Tu pedido de {$order->service->name} no pudo ser completado. Hemos reembolsado \${$refundAmount} a tu cuenta. Motivo: " . ($order->admin_notes ?? 'No especificado'))
+                        ->danger()
+                        ->actions([
+                            \Filament\Notifications\Actions\Action::make('view')
+                                ->label('Ver Detalles')
+                                ->url('/app/movements')
+                        ])
+                        ->sendToDatabase($order->user);
+
+                } catch (\Exception $e) {
+                    \Log::error("Error processing refund for order {$order->id}: " . $e->getMessage());
+                }
+            } else {
+                 \Filament\Notifications\Notification::make()
+                    ->title('Pedido Rechazado')
+                    ->body("Tu pedido de {$order->service->name} ha sido rechazado. " . ($order->admin_notes ? "Motivo: {$order->admin_notes}" : ""))
+                    ->danger()
+                    ->sendToDatabase($order->user);
             }
         }
 
-        if ($order->isDirty('status') && $order->status === 'completed') {
+        if ($order->wasChanged('status') && $order->status === 'processing') {
+            \Filament\Notifications\Notification::make()
+                ->title('Tu pedido está en proceso')
+                ->body("Estamos trabajando en tu solicitud de {$order->service->name}. Te notificaremos cuando esté lista.")
+                ->info()
+                ->sendToDatabase($order->user);
+        }
+
+        if ($order->wasChanged('status') && $order->status === 'completed') {
+            \Filament\Notifications\Notification::make()
+                ->title('¡Trámite Listo!')
+                ->body("Tu trámite de {$order->service->name} ha sido completado. Puedes descargar tu documento en la sección 'Mis Trámites'.")
+                ->success()
+                ->actions([
+                    \Filament\Notifications\Actions\Action::make('download')
+                        ->label('Ver Trámite')
+                        ->url('/app/orders')
+                ])
+                ->sendToDatabase($order->user);
+
             try {
                 \Illuminate\Support\Facades\Mail::to($order->user->email)
                     ->send(new \App\Mail\OrderCompleted($order));
                 
                 \App\Models\ActivityLog::create([
-                    'user_id' => $order->user_id, // The recipient
+                    'user_id' => $order->user_id, 
                     'event' => 'email_sent',
                     'subject_type' => Order::class,
                     'subject_id' => $order->id,
@@ -86,7 +127,6 @@ class OrderObserver
                 ]);
             } catch (\Exception $e) {
                 \Log::error("Error enviando correo de pedido completado: " . $e->getMessage());
-                // Consider logging the failure too
                 \App\Models\ActivityLog::create([
                      'user_id' => auth()->id(),
                      'event' => 'email_failed',
@@ -98,8 +138,7 @@ class OrderObserver
             }
         }
         
-        // Log Status Change
-        if ($order->isDirty('status')) {
+        if ($order->wasChanged('status')) {
              \App\Models\ActivityLog::create([
                 'user_id' => auth()->id() ?? $order->user_id,
                 'event' => 'status_updated',
