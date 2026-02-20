@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Service extends Model
 {
     protected $fillable = [
+        'category_id',
         'code',
         'name', 
         'description', 
@@ -31,5 +32,10 @@ class Service extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 }

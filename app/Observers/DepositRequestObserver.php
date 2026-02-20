@@ -21,6 +21,11 @@ class DepositRequestObserver
                     ->url('/admin/deposit-requests/' . $depositRequest->id . '/edit')
             ])
             ->sendToDatabase(User::where('is_admin', true)->get());
+
+        $admins = User::where('is_admin', true)->get();
+        foreach ($admins as $admin) {
+            \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\AdminDepositCreated($depositRequest));
+        }
     }
 
     public function updated(DepositRequest $depositRequest): void

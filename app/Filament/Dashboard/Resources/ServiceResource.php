@@ -71,6 +71,12 @@ class ServiceResource extends Resource
                 ])->space(0)->extraAttributes(['class' => 'bg-white dark:bg-gray-800 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 overflow-hidden transform transition hover:shadow-lg hover:-translate-y-1 duration-300']),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Filtrar por Etiqueta / Tipo')
+                    ->relationship('category', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('edit')

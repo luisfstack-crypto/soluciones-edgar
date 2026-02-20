@@ -39,6 +39,7 @@ class DashboardPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->favicon(asset('favicon.ico'))
             ->databaseNotifications()
+            ->databaseNotificationsPolling('10s')
             ->viteTheme('resources/css/app.css')
             ->discoverResources(in: app_path('Filament/Dashboard/Resources'), for: 'App\\Filament\\Dashboard\\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\\Filament\\Dashboard\\Pages')
@@ -58,6 +59,12 @@ class DashboardPanelProvider extends PanelProvider
                     @if(auth()->check() && !auth()->user()->is_admin)
                         @include('filament.components.header-balance')
                     @endif
+                HTML)
+            )
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::CONTENT_START,
+                fn (): string => \Illuminate\Support\Facades\Blade::render(<<<'HTML'
+                    @include('filament.components.banners')
                 HTML)
             )
             ->middleware([

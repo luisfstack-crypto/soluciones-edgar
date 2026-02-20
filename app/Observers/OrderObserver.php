@@ -60,11 +60,13 @@ class OrderObserver
                     ->url('/admin/orders/' . $order->id . '/edit')
             ])
             ->sendToDatabase(\App\Models\User::where('is_admin', true)->get());
+
+        $admins = \App\Models\User::where('is_admin', true)->get();
+        foreach ($admins as $admin) {
+            \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\AdminOrderCreated($order));
+        }
     }
 
-    /**
-     * Handle the Order "updated" event.
-     */
      public function updated(Order $order): void
     {
         if ($order->wasChanged('status') && $order->status === 'rejected') {
@@ -183,14 +185,13 @@ class OrderObserver
                 \Filament\Notifications\Notification::make()
                     ->title('Pedido Eliminado y Reembolsado')
                     ->body("Tu pedido de {$order->service->name} ha sido eliminado por un administrador. Se han devuelto \${$refundAmount} a tu cuenta.")
-                    ->warning() // Use warning or danger
+                    ->warning() 
                     ->sendToDatabase($order->user);
 
             } catch (\Exception $e) {
                 \Log::error("Error refunding deleted order {$order->id}: " . $e->getMessage());
             }
         } else {
-            // Just notify
              \Filament\Notifications\Notification::make()
                 ->title('Pedido Eliminado')
                 ->body("Tu pedido de {$order->service->name} ha sido eliminado por el administrador.")
@@ -199,17 +200,12 @@ class OrderObserver
         }
     }
 
-    /**
-     * Handle the Order "restored" event.
-     */
     public function restored(Order $order): void
     {
         //
     }
 
-    /**
-     * Handle the Order "force deleted" event.
-     */
+    
     public function forceDeleted(Order $order): void
     {
     }

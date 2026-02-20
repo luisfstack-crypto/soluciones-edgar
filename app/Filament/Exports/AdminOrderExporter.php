@@ -7,7 +7,7 @@ use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
 
-class OrderExporter extends Exporter
+class AdminOrderExporter extends Exporter
 {
     protected static ?string $model = Order::class;
 
@@ -26,6 +26,16 @@ class OrderExporter extends Exporter
                 ->label('Fecha'),
             ExportColumn::make('price_at_purchase')
                 ->label('Precio Cobrado'),
+            ExportColumn::make('service_cost_snapshot')
+                ->label('Costo Base (Gasto)'),
+            ExportColumn::make('service_price_snapshot')
+                ->label('Precio de Lista (Valor Real)'),
+            ExportColumn::make('profit')
+                ->label('Utilidad')
+                ->state(fn (Order $record): float => $record->price_at_purchase - $record->service_cost_snapshot),
+            ExportColumn::make('discount')
+                ->label('Descuento')
+                ->state(fn (Order $record): float => $record->service_price_snapshot - $record->price_at_purchase),
         ];
     }
 
