@@ -16,4 +16,17 @@ class ListServices extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getTabs(): array
+    {
+        $tabs = ['Todos' => \Filament\Resources\Components\Tab::make('Todos')];
+        
+        $categories = \App\Models\Category::all();
+        foreach ($categories as $category) {
+            $tabs[$category->name] = \Filament\Resources\Components\Tab::make($category->name)
+                ->modifyQueryUsing(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('category_id', $category->id));
+        }
+        
+        return $tabs;
+    }
 }

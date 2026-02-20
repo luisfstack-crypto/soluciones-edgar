@@ -1,8 +1,14 @@
 @php
     $banners = \App\Models\Banner::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+    $isDashboard = request()->routeIs('filament.dashboard.pages.dashboard') || request()->is('app');
 @endphp
 
 @if($banners->isNotEmpty())
+    <style>
+        .banner-content figcaption { display: none !important; }
+        .banner-content figure.attachment { margin: 0; padding: 0; }
+        .banner-content img { border-radius: 0.5rem; max-height: 400px; object-fit: cover; }
+    </style>
     <div class="flex flex-col gap-4 mb-8">
         @foreach($banners as $banner)
             @php
@@ -20,6 +26,14 @@
                     'danger' => 'text-red-500',
                     default => 'text-gray-500',
                 };
+                
+                $content = $banner->content;
+                $content = preg_replace('/<figcaption\b[^>]*>(.*?)<\/figcaption>/is', '', $content);
+
+                if (!$isDashboard) {
+                    $content = preg_replace('/<figure\b[^>]*>(.*?)<\/figure>/is', '', $content);
+                    $content = preg_replace('/<img\b[^>]*>/is', '', $content);
+                }
             @endphp
             <div class="{{ $bgClass }} border rounded-xl p-4 flex items-start sm:items-center gap-4 shadow-sm w-full">
                 <div class="flex-shrink-0 {{ $iconClass }}">
@@ -33,11 +47,11 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     @endif
                 </div>
-                <div class="flex-1 w-full prose dark:prose-invert max-w-none text-sm">
+                <div class="flex-1 w-full prose dark:prose-invert max-w-none text-sm banner-content overflow-hidden">
                     @if($banner->title)
                         <strong class="block mb-1 text-base">{{ $banner->title }}</strong>
                     @endif
-                    <div>{!! $banner->content !!}</div>
+                    <div>{!! $content !!}</div>
                 </div>
             </div>
         @endforeach

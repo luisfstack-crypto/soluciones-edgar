@@ -199,13 +199,14 @@ class ServiceResource extends Resource
                         ->size(Tables\Columns\TextColumn\TextColumnSize::Large),
                 ])->space(3),
             ])
+            ->groups([
+                Tables\Grouping\Group::make('category.name')
+                    ->label('Categoría')
+                    ->collapsible()
+                    ->titlePrefixedWithLabel(false),
+            ])
+            ->defaultGroup('category.name')
             ->filters([
-                Tables\Filters\SelectFilter::make('category_id')
-                    ->label('Filtrar por Etiqueta / Tipo')
-                    ->relationship('category', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('solicitar')

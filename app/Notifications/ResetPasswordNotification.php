@@ -25,16 +25,22 @@ class ResetPasswordNotification extends Notification
 
     public function toMail($notifiable)
     {
-        $panel = Filament::getCurrentPanel() ?? filament()->getPanel('dashboard');
-        
-        $url = $panel->getResetPasswordUrl($this->token, $notifiable);
+        $routeName = $notifiable->is_admin 
+            ? 'filament.admin.auth.password-reset.reset' 
+            : 'filament.dashboard.auth.password-reset.reset';
+            
+        $url = route($routeName, [
+            'token' => $this->token,
+            'email' => $notifiable->getEmailForPasswordReset(),
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('Enviando correo de restablecimiento a: ' . $notifiable->email . ' con URL: ' . $url);
 
         return (new MailMessage)
             ->subject('Restablecer Contraseña - Soluciones Edgar')
-            ->greeting("Hola, {$notifiable->name}!")
-            ->line('Recibiste este correo porque solicitaste restablecer tu contraseña.')
-            ->action('Restablecer Contraseña', $url)
-            ->line('Si no solicitaste este cambio, puedes ignorar este mensaje.')
-            ->salutation('Saludos, Soluciones Edgar');
+            ->view('emails.auth.reset', [
+                'notifiable' => $notifiable,
+                'url' => $url,
+            ]);
     }
 }
