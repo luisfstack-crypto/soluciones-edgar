@@ -77,7 +77,12 @@ class ServiceResource extends Resource
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('price')
-                                    ->label('Precio')
+                                    ->label('Precio al Público')
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('$'),
+                                Forms\Components\TextInput::make('cost')
+                                    ->label('Costo Interno (Gasto)')
                                     ->required()
                                     ->numeric()
                                     ->prefix('$'),

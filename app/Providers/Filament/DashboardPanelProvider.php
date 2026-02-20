@@ -67,6 +67,12 @@ class DashboardPanelProvider extends PanelProvider
                     @include('filament.components.banners')
                 HTML)
             )
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::BODY_END,
+                fn (): string => \Illuminate\Support\Facades\Blade::render(<<<'HTML'
+                    @include('filament.components.browser-push')
+                HTML)
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

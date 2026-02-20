@@ -67,6 +67,12 @@ class AdminPanelProvider extends PanelProvider
                     </a>
                 ',
             )
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::BODY_END,
+                fn (): string => \Illuminate\Support\Facades\Blade::render(<<<'HTML'
+                    @include('filament.components.browser-push')
+                HTML)
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
