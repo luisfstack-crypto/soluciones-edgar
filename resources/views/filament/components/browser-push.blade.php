@@ -1,27 +1,17 @@
 <script>
     document.addEventListener('livewire:initialized', () => {
         let lastUnreadCount = -1;
-
-        // Solicitar permiso de notificaciones inmediatamente
-        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    console.log('Permiso de notificaciones concedido.');
-                }
-            });
-        }
-
+        
         const playNotificationSound = () => {
             const audio = new Audio('/audio/notification.mp3');
-            audio.play().catch(e => {
-                console.warn('El sonido no se pudo reproducir. El navegador suele requerir que el usuario haga clic en la página al menos una vez antes de permitir sonidos automáticos.');
-            });
+            audio.volume = 0.7;
+            audio.play().catch(e => {});
         };
 
         const showBrowserNotification = (title, body) => {
             if ("Notification" in window && Notification.permission === "granted") {
                 new Notification(title || 'Soluciones Edgar', {
-                    body: body || 'Tienes nuevas notificaciones.',
+                    body: body || 'Tienes una nueva actualización en tu panel.',
                     icon: '/images/logo.png',
                 });
             }
@@ -32,47 +22,57 @@
             showBrowserNotification(event.detail.title, event.detail.body);
         });
 
-        const observeBadge = () => {
-            const badgeSelectors = [
-                '.fi-topbar-item-badge', 
-                '.fi-header-badge', 
-                '.fi-icon-button-badge',
+        window.addEventListener('filament-notifications-sent', (event) => {
+            playNotificationSound();
+        });
+
+        const checkNotificationBadge = () => {
+            const selectors = [
+                '.fi-topbar-database-notifications-trigger .fi-icon-button-badge',
+                '.fi-topbar-item-badge',
+                '.fi-header-badge',
+                '[data-notification-indicator]',
                 '.fi-notifications-link-badge'
             ];
             
-            const badge = document.querySelector(badgeSelectors.join(','));
+            const badge = document.querySelector(selectors.join(','));
             
             if (badge) {
-                let currentCount = parseInt(badge.innerText.trim()) || 0;
+                const currentCount = parseInt(badge.innerText.trim()) || 0;
                 
                 if (lastUnreadCount !== -1 && currentCount > lastUnreadCount) {
                     playNotificationSound();
-                    showBrowserNotification('Nueva Notificación', 'Acabas de recibir una actualización en tu panel.');
+                    showBrowserNotification('Nueva Notificación', 'Tienes actualizaciones pendientes en tu bandeja.');
                 }
                 lastUnreadCount = currentCount;
             } else {
-                lastUnreadCount = 0;
+                if (lastUnreadCount !== 0) {
+                    lastUnreadCount = 0;
+                }
             }
         };
 
         Livewire.hook('commit', ({ component, respond }) => {
             respond(() => {
-                if (component.name === 'filament.notifications.database-notifications') {
-                    observeBadge();
-                }
+                checkNotificationBadge();
             });
         });
 
         const observer = new MutationObserver(() => {
-            observeBadge();
+            checkNotificationBadge();
         });
 
         observer.observe(document.body, {
             childList: true,
             subtree: true,
+            attributes: true,
             characterData: true
         });
-        
-        observeBadge();
+
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+
+        checkNotificationBadge();
     });
 </script>
