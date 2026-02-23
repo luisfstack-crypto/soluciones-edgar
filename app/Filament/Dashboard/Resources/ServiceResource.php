@@ -27,7 +27,7 @@ class ServiceResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([]); // Read only
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
@@ -40,11 +40,11 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make('image_path')
-                        ->height('200px')
-                        ->width('100%')
                         ->disk('public')
-                        ->extraImgAttributes(['class' => 'object-contain w-full h-full bg-gray-50 dark:bg-gray-900 rounded-t-xl'])
-                        ->defaultImageUrl(url('/images/logo.png')),
+                        ->height(200)
+                        ->width('100%')
+                        ->alignCenter()
+                        ->extraImgAttributes(['class' => 'object-contain object-center mx-auto block bg-gray-50 rounded']),
                     
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('name')

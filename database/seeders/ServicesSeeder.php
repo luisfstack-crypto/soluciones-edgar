@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Service;
 
@@ -21,10 +20,7 @@ class ServicesSeeder extends Seeder
                 'price' => 70.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'ACT-DEF',
@@ -33,10 +29,7 @@ class ServicesSeeder extends Seeder
                 'price' => 70.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'ACT-DIV',
@@ -45,10 +38,7 @@ class ServicesSeeder extends Seeder
                 'price' => 70.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'ACT-MAT',
@@ -57,10 +47,7 @@ class ServicesSeeder extends Seeder
                 'price' => 70.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP de alguno de los esposos', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'CSF-01',
@@ -69,10 +56,7 @@ class ServicesSeeder extends Seeder
                 'price' => 60.00,
                 'service_type' => 'SAT',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'CSF-02',
@@ -81,7 +65,6 @@ class ServicesSeeder extends Seeder
                 'price' => 55.00,
                 'service_type' => 'SAT',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
                 'form_schema' => [
                     ['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true, 'regex' => '/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/'],
                     ['name' => 'idcif', 'label' => 'IDCIF', 'type' => 'text', 'required' => true],
@@ -94,10 +77,7 @@ class ServicesSeeder extends Seeder
                 'price' => 95.00,
                 'service_type' => 'SAT',
                 'processing_time' => '1-6 Horas',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true, 'regex' => '/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/'],
-                ],
+                'form_schema' => [['name' => 'rfc', 'label' => 'RFC', 'type' => 'text', 'required' => true, 'regex' => '/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/']],
             ],
             [
                 'code' => 'NSS-01',
@@ -106,10 +86,7 @@ class ServicesSeeder extends Seeder
                 'price' => 40.00,
                 'service_type' => 'SINDOS IMSS',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'NSS-02',
@@ -118,10 +95,7 @@ class ServicesSeeder extends Seeder
                 'price' => 20.00,
                 'service_type' => 'SINDOS IMSS',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'NSS-03',
@@ -130,10 +104,7 @@ class ServicesSeeder extends Seeder
                 'price' => 40.00,
                 'service_type' => 'SINDOS IMSS',
                 'processing_time' => '10 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'input_string', 'label' => 'CURP : NSS (Ej: MAGG93... : 4649...)', 'type' => 'text', 'required' => true],
-                ],
+                'form_schema' => [['name' => 'input_string', 'label' => 'CURP : NSS (Ej: MAGG93... : 4649...)', 'type' => 'text', 'required' => true]],
             ],
             [
                 'code' => 'AFO-01',
@@ -142,10 +113,7 @@ class ServicesSeeder extends Seeder
                 'price' => 20.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'CURP-01',
@@ -154,10 +122,7 @@ class ServicesSeeder extends Seeder
                 'price' => 8.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                ],
+                'form_schema' => [['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/']],
             ],
             [
                 'code' => 'CFE-01',
@@ -166,10 +131,7 @@ class ServicesSeeder extends Seeder
                 'price' => 10.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '1-10 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'service_number', 'label' => 'Número de Servicio', 'type' => 'text', 'required' => true],
-                ],
+                'form_schema' => [['name' => 'service_number', 'label' => 'Número de Servicio', 'type' => 'text', 'required' => true]],
             ],
             [
                 'code' => 'ANP-01',
@@ -178,7 +140,6 @@ class ServicesSeeder extends Seeder
                 'price' => 70.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '5 Minutos',
-                'image_path' => null,
                 'form_schema' => [
                     ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
                     ['name' => 'names', 'label' => 'Nombres', 'type' => 'text', 'required' => true],
@@ -195,10 +156,7 @@ class ServicesSeeder extends Seeder
                 'price' => 100.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '1-60 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'credit_number', 'label' => 'Número de Crédito', 'type' => 'text', 'required' => true],
-                ],
+                'form_schema' => [['name' => 'credit_number', 'label' => 'Número de Crédito', 'type' => 'text', 'required' => true]],
             ],
             [
                 'code' => 'REC-INF',
@@ -207,10 +165,7 @@ class ServicesSeeder extends Seeder
                 'price' => 100.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '1-20 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/'],
-                ],
+                'form_schema' => [['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/']],
             ],
             [
                 'code' => 'REPHIS-INF',
@@ -219,10 +174,7 @@ class ServicesSeeder extends Seeder
                 'price' => 100.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '1-30 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/'],
-                ],
+                'form_schema' => [['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/']],
             ],
             [
                 'code' => 'RESCRED-INF',
@@ -231,10 +183,7 @@ class ServicesSeeder extends Seeder
                 'price' => 100.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '1-30 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'identifier', 'label' => 'NSS o Número de Crédito', 'type' => 'text', 'required' => true],
-                ],
+                'form_schema' => [['name' => 'identifier', 'label' => 'NSS o Número de Crédito', 'type' => 'text', 'required' => true]],
             ],
             [
                 'code' => 'FP-TCDMX',
@@ -243,7 +192,6 @@ class ServicesSeeder extends Seeder
                 'price' => 30.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '10 Minutos',
-                'image_path' => null,
                 'form_schema' => [
                     ['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/'],
                     ['name' => 'year', 'label' => 'Año a Pagar', 'type' => 'text', 'required' => true, 'regex' => '/^\d{4}$/'],
@@ -252,14 +200,11 @@ class ServicesSeeder extends Seeder
             [
                 'code' => 'FP-TEDOMX',
                 'name' => 'FORMATO PAGO DE TENENCIA EDOMEX',
-                'description' => '\'Para solicitarlo se Requiere: NÚMERO DE PLACA',
+                'description' => 'Para solicitarlo se Requiere: NÚMERO DE PLACA',
                 'price' => 30.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '10 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/'],
-                ],
+                'form_schema' => [['name' => 'plate', 'label' => 'Número de Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/']],
             ],
             [
                 'code' => 'HOJ-REP',
@@ -268,17 +213,49 @@ class ServicesSeeder extends Seeder
                 'price' => 30.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '1-20 Minutos',
-                'image_path' => null,
-                'form_schema' => [
-                    ['name' => 'plate', 'label' => 'Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/'],
-                ],
+                'form_schema' => [['name' => 'plate', 'label' => 'Placa', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z0-9-]{6,9}$/']],
             ],
         ];
 
-        foreach ($services as $service) {
+        // Mapeo manual de imágenes exactas
+        $imageMapping = [
+            'ACT-NAC' => 'Obten-Tu-Acta-de-Nacimiento-en-Linea-Facilmente.jpg',
+            'ACT-DEF' => 'Obten-Tu-Acta-de-Nacimiento-en-Linea-Facilmente.jpg',
+            'ACT-DIV' => 'Obten-Tu-Acta-de-Nacimiento-en-Linea-Facilmente.jpg',
+            'ACT-MAT' => 'Obten-Tu-Acta-de-Nacimiento-en-Linea-Facilmente.jpg',
+            'CSF-01' => 'images..jpg',
+            'CSF-02' => 'images..jpg',
+            'IDCIF-01' => 'IDCIF SAT.jpg',
+            'NSS-01' => 'CD-IMSS.jpg',
+            'NSS-02' => 'CD-IMSS.jpg',
+            'NSS-03' => 'CD-IMSS.jpg',
+            'AFO-01' => 'Afore.jpg',
+            'CURP-01' => 'curp.jpg',
+            'CFE-01' => 'cfe.jpg',
+            'ANP-01' => 'antecedentes.jpg',
+            'EDO-INF' => 'infonavit..jpg',
+            'REC-INF' => 'infonavit..jpg',
+            'REPHIS-INF' => 'infonavit..jpg',
+            'RESCRED-INF' => 'infonavit..jpg',
+            'FP-TCDMX' => 'TENENCIA CDMX.jpg',
+            'FP-TEDOMX' => 'TENENCIA CDMX.jpg',
+            'HOJ-REP' => 'REPUVE-Registro-Publico-Vehicular.jpg',
+        ];
+
+        foreach ($services as $data) {
+            $imageName = $imageMapping[$data['code']] ?? null;
+            
+            $price = $data['price'] ?? 0;
+            $cost = $data['cost'] ?? ($price * 0.7);
+
             Service::updateOrCreate(
-                ['code' => $service['code']],
-                $service
+                ['code' => $data['code']],
+                array_merge($data, [
+                    'image_path' => $imageName ? "services/{$imageName}" : null,
+                    'cost' => $cost,
+                    'is_active' => true,
+                    'active_schedule' => '8:00 AM a 8:00 PM',
+                ])
             );
         }
     }

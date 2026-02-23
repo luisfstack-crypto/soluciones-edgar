@@ -97,8 +97,8 @@ class ServiceResource extends Resource
                         Forms\Components\FileUpload::make('image_path')
                             ->label('Imagen del Servicio')
                             ->image()
-                            ->directory('service-images')
-                            ->disk('public')
+                            ->directory('services')
+                            ->disk('public') 
                             ->visibility('public')
                             ->columnSpanFull(),
                         Forms\Components\Toggle::make('is_active')
@@ -142,9 +142,11 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make('image_path')
-                        ->label('Imagen')
-                        ->disk('public')
-                        ->extraImgAttributes(['class' => 'object-contain h-48 w-full bg-gray-50 dark:bg-gray-900']),
+                        ->disk('public') 
+                        ->height(200)
+                        ->width('100%')
+                        ->alignCenter()
+                        ->extraImgAttributes(['class' => 'object-contain object-center mx-auto block bg-gray-50 rounded']),
                     Tables\Columns\TextColumn::make('code')
                         ->weight(FontWeight::Bold)
                         ->color('primary')
@@ -219,9 +221,7 @@ class ServiceResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
