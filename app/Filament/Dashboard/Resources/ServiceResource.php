@@ -42,6 +42,7 @@ class ServiceResource extends Resource
                     Tables\Columns\ImageColumn::make('image_path')
                         ->height('200px')
                         ->width('100%')
+                        ->disk('public')
                         ->extraImgAttributes(['class' => 'object-contain w-full h-full bg-gray-50 dark:bg-gray-900 rounded-t-xl'])
                         ->defaultImageUrl(url('/images/logo.png')),
                     

@@ -58,12 +58,6 @@ class ServiceResource extends Resource
                                 Forms\Components\TextInput::make('service_type')
                                     ->label('Tipo de Servicio Interno (Legacy)')
                                     ->maxLength(255),
-                                Forms\Components\FileUpload::make('image_path')
-                                    ->label('Imagen')
-                                    ->image()
-                                    ->imageEditor()
-                                    ->columnSpan(1)
-                                    ->directory('service-images'),
                             ]),
                         Forms\Components\Textarea::make('description')
                             ->label('Descripción')
@@ -103,14 +97,9 @@ class ServiceResource extends Resource
                         Forms\Components\FileUpload::make('image_path')
                             ->label('Imagen del Servicio')
                             ->image()
-                            ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                null,
-                                '16:9',
-                                '4:3',
-                                '1:1',
-                            ])
                             ->directory('service-images')
+                            ->disk('public')
+                            ->visibility('public')
                             ->columnSpanFull(),
                         Forms\Components\Toggle::make('is_active')
                             ->label('Activo')
@@ -154,6 +143,7 @@ class ServiceResource extends Resource
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make('image_path')
                         ->label('Imagen')
+                        ->disk('public')
                         ->extraImgAttributes(['class' => 'object-contain h-48 w-full bg-gray-50 dark:bg-gray-900']),
                     Tables\Columns\TextColumn::make('code')
                         ->weight(FontWeight::Bold)
