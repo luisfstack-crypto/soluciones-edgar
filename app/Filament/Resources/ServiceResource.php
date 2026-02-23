@@ -98,7 +98,7 @@ class ServiceResource extends Resource
                             ->label('Imagen del Servicio')
                             ->image()
                             ->directory('services')
-                            ->disk('public') 
+                            ->disk(config('filesystems.default')) 
                             ->visibility('public')
                             ->columnSpanFull(),
                         Forms\Components\Toggle::make('is_active')
@@ -142,7 +142,7 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make('image_path')
-                        ->disk('public') 
+                        ->disk(config('filesystems.default')) 
                         ->height(200)
                         ->width('100%')
                         ->alignCenter()

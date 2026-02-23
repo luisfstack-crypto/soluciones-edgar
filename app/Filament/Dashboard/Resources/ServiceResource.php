@@ -40,7 +40,7 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\ImageColumn::make('image_path')
-                        ->disk('public')
+                        ->disk(config('filesystems.default'))
                         ->height(200)
                         ->width('100%')
                         ->alignCenter()
