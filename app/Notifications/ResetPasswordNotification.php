@@ -29,10 +29,14 @@ class ResetPasswordNotification extends Notification
             ? 'filament.admin.auth.password-reset.reset' 
             : 'filament.dashboard.auth.password-reset.reset';
             
-        $url = route($routeName, [
-            'token' => $this->token,
-            'email' => $notifiable->getEmailForPasswordReset(),
-        ]);
+        $url = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+            $routeName,
+            \Illuminate\Support\Carbon::now()->addMinutes(\Illuminate\Support\Facades\Config::get('auth.passwords.users.expire', 60)),
+            [
+                'token' => $this->token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ]
+        );
 
         \Illuminate\Support\Facades\Log::info('Enviando correo de restablecimiento a: ' . $notifiable->email . ' con URL: ' . $url);
 

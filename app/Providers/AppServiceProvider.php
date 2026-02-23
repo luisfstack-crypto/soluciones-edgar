@@ -46,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
                 ->view('emails.auth.verify', ['url' => $url, 'user' => $notifiable]);
         });
 
+        \Illuminate\Auth\Notifications\ResetPassword::toMailUsing(function ($notifiable, $token) {
+            return (new \App\Notifications\ResetPasswordNotification($token))->toMail($notifiable);
+        });
+
         Mail::extend('brevo', function () {
             return (new BrevoTransportFactory)->create(
                 new Dsn(
