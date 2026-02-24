@@ -39,13 +39,6 @@ class ServiceResource extends Resource
             ])
             ->columns([
                 Tables\Columns\Layout\Stack::make([
-                    Tables\Columns\ImageColumn::make('image_path')
-                        ->disk(config('filesystems.default'))
-                        ->height(200)
-                        ->width('100%')
-                        ->alignCenter()
-                        ->extraImgAttributes(['class' => 'object-contain object-center mx-auto block bg-gray-50 rounded']),
-                    
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('name')
                             ->weight('bold')
