@@ -3,11 +3,7 @@
         <div class="md:col-span-1 space-y-6">
              <!-- Service Card -->
              <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden ring-1 ring-gray-950/5 dark:ring-white/10">
-                 @if($service->image_path)
-                    <div class="relative h-48">
-                         <img src="{{ Storage::url($service->image_path) }}" class="absolute inset-0 w-full h-full object-cover" />
-                    </div>
-                 @endif
+
                  <div class="p-6">
                      <h2 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">{{ $service->name }}</h2>
                      <div class="mb-4">
