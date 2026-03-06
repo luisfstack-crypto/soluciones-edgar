@@ -42,9 +42,11 @@ class OrderResource extends Resource
                  Forms\Components\Section::make('Detalles del Pedido')
                     ->schema([
                         Forms\Components\TextInput::make('service.name')
-                            ->label('Servicio'),
+                            ->label('Servicio')
+                            ->disabled(),
                         Forms\Components\TextInput::make('status')
                             ->label('Estado')
+                            ->disabled()
                             ->formatStateUsing(fn (string $state): string => match ($state) {
                                 'pending' => 'Pendiente',
                                 'processing' => 'En Proceso',
@@ -54,6 +56,8 @@ class OrderResource extends Resource
                             }),
                         Forms\Components\Textarea::make('admin_notes')
                              ->label('Notas del Administrador')
+                             ->rows(4)
+                             ->disabled()
                              ->visible(fn ($record) => $record && $record->admin_notes),
                     ])
             ]);
@@ -88,7 +92,8 @@ class OrderResource extends Resource
                         'completed' => 'Completado',
                         'rejected' => 'Rechazado',
                         default => $state,
-                    }),
+                    })
+                    ->description(fn (Order $record): string => (string) ($record->admin_notes ?? '')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha')
                     ->dateTime()
@@ -105,6 +110,9 @@ class OrderResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->label('Ver Detalle')
+                    ->modalHeading('Detalles del Trámite'),
                 Tables\Actions\Action::make('manage')
                     ->label('Administrar')
                     ->icon('heroicon-m-pencil-square')
