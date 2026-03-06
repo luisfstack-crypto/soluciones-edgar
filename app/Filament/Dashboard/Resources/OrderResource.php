@@ -115,8 +115,7 @@ class OrderResource extends Resource
                 Tables\Actions\Action::make('download')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->url(fn (Order $record) => \Illuminate\Support\Facades\Storage::url($record->result_file_path))
-                    ->openUrlInNewTab()
+                    ->url(fn (Order $record) => route('orders.download', ['order' => $record->id]))
                     ->visible(fn (Order $record) => $record->status === 'completed' && $record->result_file_path),
             ])
             ->bulkActions([]);

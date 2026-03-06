@@ -160,6 +160,12 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('download')
+                    ->label('Descargar PDF')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->url(fn (Order $record) => route('orders.download', ['order' => $record->id]))
+                    ->visible(fn (Order $record) => $record->status === 'completed' && $record->result_file_path),
                 Tables\Actions\Action::make('upload_result')
                     ->label('Subir Resultado')
                     ->icon('heroicon-m-arrow-up-tray')

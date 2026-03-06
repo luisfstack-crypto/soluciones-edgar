@@ -26,4 +26,19 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+Route::get('/app/orders/{order}/download', function (\App\Models\Order $order) {
+    if ($order->user_id !== auth()->id() && !auth()->user()->is_admin) {
+        abort(403);
+    }
+    
+    if (!$order->result_file_path) {
+        abort(404);
+    }
+
+    return \Illuminate\Support\Facades\Storage::download(
+        $order->result_file_path, 
+        'Resultado_' . $order->id . '.pdf'
+    );
+})->middleware(['auth'])->name('orders.download');
+
 require __DIR__.'/auth.php';
