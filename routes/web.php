@@ -35,7 +35,7 @@ Route::get('/app/orders/{order}/download', function (\App\Models\Order $order) {
         abort(404);
     }
 
-    return \Illuminate\Support\Facades\Storage::download(
+    return \Illuminate\Support\Facades\Storage::disk('s3')->download(
         $order->result_file_path, 
         'Resultado_' . $order->id . '.pdf'
     );
