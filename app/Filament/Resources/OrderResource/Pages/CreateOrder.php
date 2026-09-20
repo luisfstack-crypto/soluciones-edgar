@@ -32,7 +32,6 @@ class CreateOrder extends CreateRecord
             $this->halt();
         }
 
-        
         return $data;
     }
 }

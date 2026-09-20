@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\DocMxWebhookController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -25,6 +26,8 @@ Route::view('dashboard', 'dashboard')
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+
+Route::post('/webhook/docmx', [DocMxWebhookController::class, 'handle'])->name('webhook.docmx');
 
 Route::get('/app/orders/{order}/download', function (\App\Models\Order $order) {
     if ($order->user_id !== auth()->id() && !auth()->user()->is_admin) {
