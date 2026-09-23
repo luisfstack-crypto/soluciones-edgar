@@ -4,6 +4,7 @@ namespace App\Filament\Dashboard\Resources;
 
 use App\Filament\Dashboard\Resources\ServiceResource\Pages;
 use App\Models\Service;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,7 +28,13 @@ class ServiceResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([]);
+        return $form->schema([
+            Forms\Components\TextInput::make('suggested_price')
+                ->label('Suggested Public Price')
+                ->numeric()
+                ->prefix('$')
+                ->disabled(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -50,6 +57,13 @@ class ServiceResource extends Resource
                             ->money('MXN')
                             ->badge()
                             ->color('success'),
+
+                        Tables\Columns\TextColumn::make('suggested_price')
+                            ->label('Suggested Public Price')
+                            ->money('MXN')
+                            ->badge()
+                            ->color('warning')
+                            ->placeholder('Not set'),
                             
                         Tables\Columns\TextColumn::make('processing_time')
                             ->icon('heroicon-m-clock')

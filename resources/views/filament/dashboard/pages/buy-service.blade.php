@@ -10,6 +10,11 @@
                          <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-lg font-bold text-green-700 ring-1 ring-inset ring-green-600/20">
                              ${{ number_format($service->price, 2) }} MXN
                          </span>
+                         @if($service->suggested_price !== null)
+                             <span class="ml-2 inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-sm font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">
+                                 Suggested Public Price: ${{ number_format($service->suggested_price, 2) }} MXN
+                             </span>
+                         @endif
                      </div>
                      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ $service->description }}</p>
                      

@@ -75,6 +75,10 @@ class ServiceResource extends Resource
                                     ->required()
                                     ->numeric()
                                     ->prefix('$'),
+                                Forms\Components\TextInput::make('suggested_price')
+                                    ->label('Suggested Public Price')
+                                    ->numeric()
+                                    ->prefix('$'),
                                 Forms\Components\TextInput::make('cost')
                                     ->label('Costo Interno (Gasto)')
                                     ->required()
@@ -183,6 +187,11 @@ class ServiceResource extends Resource
                         ->weight(FontWeight::Bold)
                         ->color('success')
                         ->size(Tables\Columns\TextColumn\TextColumnSize::Large),
+                    Tables\Columns\TextColumn::make('suggested_price')
+                        ->label('Suggested Public Price')
+                        ->money('MXN')
+                        ->color('warning')
+                        ->placeholder('Not set'),
                 ])->space(3),
             ])
             ->groups([

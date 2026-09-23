@@ -17,6 +17,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP 1-30 Minutos Tiempo de Entrega',
                 'cost' => 14.00,
                 'price' => 75.00,
+                'suggested_price' => 130.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -29,6 +30,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 11.00,
                 'price' => 60.00,
+                'suggested_price' => 110.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -41,6 +43,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP 1-30 Minutos Tiempo de Entrega',
                 'cost' => 19.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -53,6 +56,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 14.00,
                 'price' => 75.00,
+                'suggested_price' => 130.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -65,6 +69,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP 1-30 Minutos Tiempo de Entrega',
                 'cost' => 11.00,
                 'price' => 60.00,
+                'suggested_price' => 110.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -77,6 +82,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP 1-30 Minutos Tiempo de Entrega',
                 'cost' => 19.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -89,6 +95,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 16.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -101,6 +108,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP DE ALGUNO DE LOS ESPOSOS 1-30 Minutos Tiempo de Entrega',
                 'cost' => 14.00,
                 'price' => 75.00,
+                'suggested_price' => 130.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -113,6 +121,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 11.00,
                 'price' => 60.00,
+                'suggested_price' => 110.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -125,6 +134,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP DE ALGUNO DE LOS ESPOSOS 1-30 Minutos Tiempo de Entrega',
                 'cost' => 19.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -137,6 +147,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 16.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -149,6 +160,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP DE ALGUNO DE LOS ESPOSOS 1-30 Minutos Tiempo de Entrega',
                 'cost' => 14.00,
                 'price' => 75.00,
+                'suggested_price' => 130.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -161,6 +173,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 11.00,
                 'price' => 65.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -173,6 +186,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA CURP DE ALGUNO DE LOS ESPOSOS 1-30 Minutos Tiempo de Entrega',
                 'cost' => 19.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -185,6 +199,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 16.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -199,6 +214,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON LA CURP 5 Minutos Tiempo de Entrega',
                 'cost' => 14.00,
                 'price' => 60.00,
+                'suggested_price' => 100.00,
                 'service_type' => 'SAT',
                 'processing_time' => '5 Minutos',
                 'form_schema' => [
@@ -212,6 +228,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 46.00,
                 'price' => 100.00,
+                'suggested_price' => 150.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -224,6 +241,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON EL RFC Y IDCIF 5 Minutos Tiempo de Entrega',
                 'cost' => 14.00,
                 'price' => 55.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'SAT',
                 'processing_time' => '5 Minutos',
                 'form_schema' => [
@@ -237,6 +255,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 51.00,
                 'price' => 110.00,
+                'suggested_price' => 160.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -249,6 +268,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 66.00,
                 'price' => 130.00,
+                'suggested_price' => 180.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -261,6 +281,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 88.00,
                 'price' => 135.00,
+                'suggested_price' => 185.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -273,6 +294,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 121.00,
                 'price' => 175.00,
+                'suggested_price' => 225.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -285,6 +307,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO DE LUNES A VIERNES de 8:00 AM a 8:00 PM (Si ordena fuera de horario, la orden saldra cuando este dentro de horario y no contaran esas hrs en proceso) ORDENAR SOLO CON EL RFC 1-6 Horas Tiempo de Entrega',
                 'cost' => 41.00,
                 'price' => 90.00,
+                'suggested_price' => 130.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -297,6 +320,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 46.00,
                 'price' => 100.00,
+                'suggested_price' => 150.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -309,6 +333,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 61.00,
                 'price' => 110.00,
+                'suggested_price' => 160.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -321,6 +346,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 83.00,
                 'price' => 128.00,
+                'suggested_price' => 173.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -335,6 +361,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 21.00,
                 'price' => 45.00,
+                'suggested_price' => 70.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -347,6 +374,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON LA CURP EST ORDEN SOLO LE ARROJARA EL NSS DE UNA CURP 5 Minutos Tiempo de Entrega',
                 'cost' => 9.00,
                 'price' => 20.00,
+                'suggested_price' => 30.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -359,6 +387,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 16.00,
                 'price' => 35.00,
+                'suggested_price' => 50.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -371,6 +400,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 16.00,
                 'price' => 35.00,
+                'suggested_price' => 50.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -383,6 +413,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 11.00,
                 'price' => 25.00,
+                'suggested_price' => 35.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -397,6 +428,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON LA CURP 5 Minutos Tiempo de Entrega',
                 'cost' => 9.00,
                 'price' => 20.00,
+                'suggested_price' => 40.00,
                 'service_type' => 'AFORE',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -411,6 +443,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON LA CURP 5 Minutos Tiempo de Entrega',
                 'cost' => 4.00,
                 'price' => 10.00,
+                'suggested_price' => 16.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -423,6 +456,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 4.00,
                 'price' => 10.00,
+                'suggested_price' => 16.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '5 Minutos',
                 'form_schema' => [
@@ -435,6 +469,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) NORMALMENTE DMEORA DE 1 A 10 MINUTOS PERO LUEGO EL SISTEMA DE CFE ENTRA EN MANTENIMIENTO Y PEUDE DMEORAR HASTA 30 MINUTOS ORDENAR SOLO CON EL NUMERO DEL SERVICIO',
                 'cost' => 6.00,
                 'price' => 9.00,
+                'suggested_price' => 12.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -449,6 +484,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -461,6 +497,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -473,6 +510,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -485,6 +523,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -497,6 +536,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -509,6 +549,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -521,6 +562,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -533,6 +575,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -545,6 +588,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON EL NSS 1-30 Minutes Tiempo de Entrega',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -557,6 +601,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON NSS O NUEMRO DE CREDITO 1-30 Minutos Tiempo de Entrega',
                 'cost' => 111.00,
                 'price' => 200.00,
+                'suggested_price' => 260.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -569,6 +614,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -581,6 +627,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 90.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -602,6 +649,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 19.00,
                 'price' => 70.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'ACTAS',
                 'processing_time' => '1-30 Minutos',
                 'form_schema' => [
@@ -616,6 +664,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 41.00,
                 'price' => 82.00,
+                'suggested_price' => 120.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -630,6 +679,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 121.00,
                 'price' => 220.00,
+                'suggested_price' => 300.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -644,6 +694,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 46.00,
                 'price' => 100.00,
+                'suggested_price' => 150.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -658,6 +709,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 151.00,
                 'price' => 210.00,
+                'suggested_price' => 260.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -672,6 +724,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 51.00,
                 'price' => 110.00,
+                'suggested_price' => 160.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -686,6 +739,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 81.00,
                 'price' => 125.00,
+                'suggested_price' => 170.00,
                 'service_type' => 'SAT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -700,6 +754,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 71.00,
                 'price' => 150.00,
+                'suggested_price' => 200.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -714,6 +769,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 11.00,
                 'price' => 22.00,
+                'suggested_price' => 33.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -728,6 +784,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON LA CURP Y EL NSS EJEMPLO DE COMO ORDENAR: MAGG930214HGRRRR03 :46496449745 10 Minutos Tiempo de Entrega',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -742,6 +799,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -756,6 +814,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -770,6 +829,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -784,6 +844,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -798,6 +859,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -812,6 +874,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -826,6 +889,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 26.00,
                 'price' => 55.00,
+                'suggested_price' => 80.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -840,6 +904,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 66.00,
+                'suggested_price' => 96.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -854,6 +919,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 146.00,
                 'price' => 200.00,
+                'suggested_price' => 250.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -868,6 +934,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 31.00,
                 'price' => 55.00,
+                'suggested_price' => 75.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -882,6 +949,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 71.00,
                 'price' => 125.00,
+                'suggested_price' => 175.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -896,6 +964,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 36.00,
                 'price' => 56.00,
+                'suggested_price' => 76.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -910,6 +979,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 96.00,
                 'price' => 125.00,
+                'suggested_price' => 155.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -924,6 +994,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 96.00,
                 'price' => 125.00,
+                'suggested_price' => 155.00,
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -938,6 +1009,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 46.00,
                 'price' => 86.00,
+                'suggested_price' => 116.00,
                 'service_type' => 'AFORE',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -952,6 +1024,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 66.00,
                 'price' => 125.00,
+                'suggested_price' => 180.00,
                 'service_type' => 'AFORE',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -966,6 +1039,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 16.00,
                 'price' => 32.00,
+                'suggested_price' => 45.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '5 Minutos',
                 'form_schema' => [
@@ -980,18 +1054,22 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 21.00,
                 'price' => 45.00,
+                'suggested_price' => 65.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
                     ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/'],
                 ],
             ],
+            // REVISAR: el Excel trae P. sugerido = 120 (con precio tienda 70 y sin costo), pero aquí el precio es 360.
+            // Un sugerido de 120 quedaría por debajo del precio/costo, así que se dejó igual al precio (360). Ajustar si corresponde.
             [
                 'code' => 'antecedentes-no-penales-federal',
                 'name' => 'Antecedentes No Penales Federa',
                 'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR CON TODOS LOS DATOS SOLICITADOS: *CURP *NOMBRES *APELLIDO PATERNO *APELLIDO MATERNO *DOMICILIO *CLAVE ELECTOR 5 Minutos Tiempo de Entrega',
                 'cost' => 256,
                 'price' => 360.00,
+                'suggested_price' => 360.00,
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '5 Minutos',
                 'form_schema' => [
@@ -1007,6 +1085,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 136.00,
                 'price' => 200.00,
+                'suggested_price' => 250.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1021,6 +1100,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 151.00,
                 'price' => 251.00,
+                'suggested_price' => 321.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1036,6 +1116,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 106.00,
                 'price' => 200.00,
+                'suggested_price' => 260.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1050,6 +1131,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 136.00,
                 'price' => 200.00,
+                'suggested_price' => 250.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1064,6 +1146,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR CON NUMERO DE CREDITO 1-60 Minutos Tiempo de Entrega',
                 'cost' => 21.00,
                 'price' => 42.00,
+                'suggested_price' => 62.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -1078,6 +1161,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Para solicitarlo solo se requiere: NSS (Simplemente complete los datos y proceda a pagar sus pedidos utilizando su saldo de crédito) 1-20 Minutos Tiempo de Entrega',
                 'cost' => 66.00,
                 'price' => 120.00,
+                'suggested_price' => 170.00,
                 'service_type' => 'INFONAVIT',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
@@ -1092,6 +1176,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 66.00,
                 'price' => 130.00,
+                'suggested_price' => 190.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1106,6 +1191,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 66.00,
                 'price' => 130.00,
+                'suggested_price' => 180.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1120,6 +1206,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 96.00,
                 'price' => 190.00,
+                'suggested_price' => 250.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1134,6 +1221,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'Para solicitarlo se Requiere: NÚMERO DE PLACA AÑO A PAGAR 10 Minutos Tiempo de Entrega',
                 'cost' => 46.00,
                 'price' => 100.00,
+                'suggested_price' => 150.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1148,6 +1236,7 @@ class ServicesSeeder extends Seeder
                 'description' => '"Para solicitarlo se Requiere: NÚMERO DE PLACA 10 Minutos Tiempo de Entrega',
                 'cost' => 46.00,
                 'price' => 100.00,
+                'suggested_price' => 150.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1162,6 +1251,7 @@ class ServicesSeeder extends Seeder
                 'description' => 'SERVICIO ACTIVO Todos los días de 8:00 AM a 8:00 PM (Si ordena fuera de horario, el documento se entregará cuando el servicio esté activo Y NO CUENTAN ESAS HRS DE PROCESO) ORDENAR SOLO CON LA PLACA 1-20 Minutos Tiempo de Entrega',
                 'cost' => 66.00,
                 'price' => 130.00,
+                'suggested_price' => 180.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1176,6 +1266,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 56.00,
                 'price' => 110.00,
+                'suggested_price' => 160.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '20 Minutos',
                 'form_schema' => [
@@ -1190,6 +1281,7 @@ class ServicesSeeder extends Seeder
                 'description' => '',
                 'cost' => 351.00,
                 'price' => 720.00,
+                'suggested_price' => 900.00,
                 'service_type' => 'VEHICULOS',
                 'processing_time' => '30 Minutos',
                 'form_schema' => [

@@ -13,6 +13,7 @@ class Service extends Model
         'name', 
         'description', 
         'price',
+        'suggested_price',
         'cost',
         'service_type',
         'schedule_notice',
@@ -27,6 +28,7 @@ class Service extends Model
         'form_schema' => 'array',
         'is_active' => 'boolean',
         'price' => 'decimal:2',
+        'suggested_price' => 'decimal:2',
     ];
 
     public function orders(): HasMany
