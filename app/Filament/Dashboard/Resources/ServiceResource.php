@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 
 class ServiceResource extends Resource
@@ -53,10 +54,8 @@ class ServiceResource extends Resource
                             ->color('primary')
                             ->searchable(),
                             
-                        Tables\Columns\TextColumn::make('price')
-                            ->money('MXN')
-                            ->badge()
-                            ->color('success'),
+                        ViewColumn::make('price')
+                            ->view('filament.columns.price-reveal'),
 
                         Tables\Columns\TextColumn::make('suggested_price')
                             ->label('Suggested Public Price')
