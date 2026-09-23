@@ -31,12 +31,27 @@ class DocMxWebhookController extends Controller
         $event = $payload['event'] ?? 'unknown';
         $externalOrderId = $payload['external_order_id'] ?? null;
 
+        Log::info('DocMX Webhook recibido.', [
+            'event'             => $event,
+            'external_order_id' => $externalOrderId,
+            'payload_completo'  => $payload,
+        ]);
+
         if (!$externalOrderId) {
+            Log::error('DocMX Webhook: Falta external_order_id en el payload.');
             return response()->json(['error' => 'Missing external_order_id'], 400);
         }
 
-        // Find the local order (assuming external_order_id corresponds to the local Order ID)
         $order = Order::find($externalOrderId);
+
+        if (!$order) {
+            $order = Order::where('external_order_id', $externalOrderId)->first();
+        }
+
+        Log::info('DocMX Webhook: resultado de búsqueda de orden.', [
+            'external_order_id_buscado' => $externalOrderId,
+            'orden_encontrada'          => $order ? $order->id : null,
+        ]);
 
         if (!$order) {
             Log::error("DocMX Webhook: Local order not found for external_order_id: {$externalOrderId}");
