@@ -473,7 +473,17 @@ class ServicesSeeder extends Seeder
                 'service_type' => 'SERVICIOS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
-                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
+                    [
+                        'name' => 'cfe_number',
+                        'label' => 'Número de Servicio CFE * (12 dígitos)',
+                        'type' => 'text',
+                        'required' => true,
+                        'numeric' => true,
+                        'rules' => ['digits:12'],
+                        'validationMessages' => [
+                            'digits' => 'El número de CFE debe tener exactamente 12 dígitos numéricos.',
+                        ],
+                    ],
                 ],
             ],
 

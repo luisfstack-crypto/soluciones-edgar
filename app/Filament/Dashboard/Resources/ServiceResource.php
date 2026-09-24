@@ -58,10 +58,11 @@ class ServiceResource extends Resource
                             ->view('filament.columns.price-reveal'),
 
                         Tables\Columns\TextColumn::make('suggested_price')
-                            ->label('Suggested Public Price')
+                            ->label('Venta al público')
                             ->money('MXN')
                             ->badge()
                             ->color('warning')
+                            ->prefix('Venta al público: ')
                             ->placeholder('Not set'),
                             
                         Tables\Columns\TextColumn::make('processing_time')

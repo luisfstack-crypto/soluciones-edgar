@@ -188,9 +188,11 @@ class ServiceResource extends Resource
                         ->color('success')
                         ->size(Tables\Columns\TextColumn\TextColumnSize::Large),
                     Tables\Columns\TextColumn::make('suggested_price')
-                        ->label('Suggested Public Price')
+                        ->label('Venta al público')
                         ->money('MXN')
+                        ->badge()
                         ->color('warning')
+                        ->prefix('Venta al público: ')
                         ->placeholder('Not set'),
                 ])->space(3),
             ])

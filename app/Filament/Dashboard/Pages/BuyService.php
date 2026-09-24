@@ -56,9 +56,33 @@ class BuyService extends Page implements HasForms
         
         if ($this->service && !empty($this->service->form_schema)) {
              $schema = collect($this->service->form_schema)->map(function ($field) {
+                if (($this->service->code ?? '') === 'recibo-cfe' || ($field['name'] ?? '') === 'cfe_number') {
+                    $fieldName = ($field['name'] ?? '') === 'curp' ? 'cfe_number' : ($field['name'] ?? 'cfe_number');
+                    return TextInput::make("input_data.{$fieldName}")
+                        ->label('Número de Servicio CFE * (12 dígitos)')
+                        ->required()
+                        ->numeric()
+                        ->rules(['digits:12'])
+                        ->validationMessages([
+                            'digits' => 'El número de CFE debe tener exactamente 12 dígitos numéricos.',
+                        ]);
+                }
+
                 $input = TextInput::make("input_data.{$field['name']}")
                     ->label($field['label'])
                     ->required($field['required'] ?? false);
+
+                if (!empty($field['numeric'])) {
+                    $input->numeric();
+                }
+
+                if (!empty($field['rules'])) {
+                    $input->rules($field['rules']);
+                }
+
+                if (!empty($field['validationMessages'])) {
+                    $input->validationMessages($field['validationMessages']);
+                }
 
                 if (isset($field['regex'])) {
                     $input->regex($field['regex']);

@@ -59,15 +59,39 @@ class OrderResource extends Resource
                                     ];
                                 }
                                 
-                                return collect($service->form_schema)->map(function ($field) {
+                                return collect($service->form_schema)->map(function ($field) use ($service) {
+                                    if (($service->code ?? '') === 'recibo-cfe' || ($field['name'] ?? '') === 'cfe_number') {
+                                        $fieldName = ($field['name'] ?? '') === 'curp' ? 'cfe_number' : ($field['name'] ?? 'cfe_number');
+                                        return Forms\Components\TextInput::make("input_data.{$fieldName}")
+                                            ->label('Número de Servicio CFE * (12 dígitos)')
+                                            ->required()
+                                            ->numeric()
+                                            ->rules(['digits:12'])
+                                            ->validationMessages([
+                                                'digits' => 'El número de CFE debe tener exactamente 12 dígitos numéricos.',
+                                            ]);
+                                    }
+
                                     $input = Forms\Components\TextInput::make("input_data.{$field['name']}")
                                         ->label($field['label'])
                                         ->required($field['required'] ?? false);
-        
+
+                                    if (!empty($field['numeric'])) {
+                                        $input->numeric();
+                                    }
+
+                                    if (!empty($field['rules'])) {
+                                        $input->rules($field['rules']);
+                                    }
+
+                                    if (!empty($field['validationMessages'])) {
+                                        $input->validationMessages($field['validationMessages']);
+                                    }
+
                                     if (isset($field['regex'])) {
                                         $input->regex($field['regex']);
                                     }
-        
+
                                     return $input;
                                 })->toArray();
                             }),

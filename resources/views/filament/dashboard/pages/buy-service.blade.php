@@ -12,7 +12,7 @@
                          </span>
                          @if($service->suggested_price !== null)
                              <span class="ml-2 inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-sm font-semibold text-amber-700 ring-1 ring-inset ring-amber-600/20">
-                                 Suggested Public Price: ${{ number_format($service->suggested_price, 2) }} MXN
+                                 Venta al público: ${{ number_format($service->suggested_price, 2) }} MXN
                              </span>
                          @endif
                      </div>
