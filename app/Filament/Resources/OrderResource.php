@@ -322,28 +322,21 @@ class OrderResource extends Resource
                     ->label('Compartir')
                     ->icon('heroicon-o-share')
                     ->color('success')
-                    ->extraAttributes(function (Order $record) {
-                        $downloadUrl = route('orders.download', ['order' => $record->id]);
-                        $title       = 'Trámite #' . $record->id . ' – ' . ($record->service?->name ?? '');
-                        $text        = 'Documento del trámite listo: ' . ($record->service?->name ?? 'Trámite');
-                        $whatsappUrl = 'https://api.whatsapp.com/send?text=' . urlencode($text . ' ' . $downloadUrl);
-
-                        return [
-                            '@click.prevent' => "
-                                if (navigator.share) {
-                                    navigator.share({
-                                        title: " . json_encode($title) . ",
-                                        text:  " . json_encode($text) . ",
-                                        url:   " . json_encode($downloadUrl) . ",
-                                    }).catch(() => {});
-                                } else {
-                                    window.open(" . json_encode($whatsappUrl) . ", '_blank');
-                                }
-                            ",
-                        ];
-                    })
-                    ->action(fn () => null)
-                    ->visible(fn (Order $record) => $record->status === 'completed' && $record->result_file_path),
+                    ->extraAttributes(fn ($record) => [
+                        'x-data' => '',
+                        'x-on:click.prevent' => "
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: 'Documento - ' + '{$record->service->name}',
+                                    text: 'Aquí tienes tu documento solicitado.',
+                                    url: '{$record->document_url}'
+                                }).catch(console.error);
+                            } else {
+                                window.open('https://api.whatsapp.com/send?text=Aquí tienes tu documento: {$record->document_url}', '_blank');
+                            }
+                        ",
+                    ])
+                    ->visible(fn ($record): bool => $record->status === 'completed' && $record->document_url),
 
                 // ── Upload result (not-completed only) ──────────────────────
                 Tables\Actions\Action::make('upload_result')

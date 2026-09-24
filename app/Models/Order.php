@@ -58,4 +58,9 @@ class Order extends Model
     {
         return $this->belongsTo(Service::class);
     }
+
+    public function getDocumentUrlAttribute(): ?string
+    {
+        return $this->result_file_path ? route('orders.download', ['order' => $this->id]) : null;
+    }
 }
