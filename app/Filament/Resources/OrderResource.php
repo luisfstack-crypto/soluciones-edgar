@@ -7,7 +7,7 @@ use App\Models\Order;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section as InfoSection;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -135,7 +135,7 @@ class OrderResource extends Resource
         return $infolist
             ->schema([
                 // ── Section 1: Status badge ───────────────────────────────────
-                InfoSection::make()
+                Section::make()
                     ->schema([
                         TextEntry::make('status')
                             ->label('Estado')
@@ -157,7 +157,7 @@ class OrderResource extends Resource
                     ]),
 
                 // ── Section 2: Order details (2 columns) ─────────────────────
-                InfoSection::make('Información del Pedido')
+                Section::make('Información del Pedido')
                     ->columns(2)
                     ->schema([
                         TextEntry::make('service.name')
@@ -216,7 +216,7 @@ class OrderResource extends Resource
                     ]),
 
                 // ── Section 3: Document banner (completed only) ───────────────
-                InfoSection::make()
+                Section::make()
                     ->schema([
                         TextEntry::make('result_file_path')
                             ->hiddenLabel()
