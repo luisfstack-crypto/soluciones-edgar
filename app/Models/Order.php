@@ -20,6 +20,7 @@ class Order extends Model
         'price_at_purchase',
         'service_cost_snapshot',
         'service_price_snapshot',
+        'batch_id',
     ];
 
     protected $casts = [
