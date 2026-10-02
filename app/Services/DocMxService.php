@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 
 class DocMxService
 {
@@ -37,13 +38,13 @@ class DocMxService
     /**
      * Create a new order in DocMX.
      */
-    public function createOrder(string $serviceId, array $formData, string $externalOrderId): array
+    public function createOrder(string $serviceId, array $formData, string $externalOrderId): Response
     {
         return $this->client->post('/orders', [
             'service_id' => $serviceId,
             'form_data' => $formData,
             'external_order_id' => $externalOrderId,
-        ])->json();
+        ]);
     }
 
     /**

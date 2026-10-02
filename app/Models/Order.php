@@ -41,10 +41,34 @@ class Order extends Model
                     (string) $order->id
                 );
 
-                Log::info("Order {$order->id} sent to DocMX.", ['docmx_response' => $response]);
+                if ($response->successful()) {
+                    Log::info("Order {$order->id} sent to DocMX.", ['docmx_response' => $response->json()]);
+                } else {
+                    $errorData = $response->json() ?? [];
+                    $errorMessage = $errorData['message'] ?? $response->body();
+                    $statusCode = $response->status();
 
-            } catch (\Exception $e) {
+                    Log::error("DocMX rejected order {$order->id} [HTTP {$statusCode}]: {$errorMessage}", [
+                        'payload' => [
+                            'service_id' => $serviceCode,
+                            'form_data' => $formData,
+                            'external_order_id' => (string) $order->id,
+                        ],
+                        'response' => $errorData,
+                    ]);
+
+                    $order->update([
+                        'status' => 'rejected',
+                        'admin_notes' => "Error DocMX ({$statusCode}): {$errorMessage}",
+                    ]);
+                }
+
+            } catch (\Throwable $e) {
                 Log::error("Failed to send order {$order->id} to DocMX: " . $e->getMessage());
+
+                $order->update([
+                    'admin_notes' => "Fallo de conexión DocMX: " . $e->getMessage(),
+                ]);
             }
         });
     }
