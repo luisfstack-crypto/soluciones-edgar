@@ -122,6 +122,33 @@ class BuyService extends Page implements HasForms
              return;
         }
 
+        $inputData = $data['input_data'] ?? [];
+
+        $existingOrder = false;
+        try {
+            $existingOrder = Order::where('user_id', $user->id)
+                ->where('service_id', $this->service->id)
+                ->whereIn('status', ['pending', 'processing'])
+                ->whereJsonContains('input_data', $inputData)
+                ->exists();
+        } catch (\Throwable $e) {
+            $existingOrder = Order::where('user_id', $user->id)
+                ->where('service_id', $this->service->id)
+                ->whereIn('status', ['pending', 'processing'])
+                ->get()
+                ->contains(function ($order) use ($inputData) {
+                    return $order->input_data == $inputData;
+                });
+        }
+
+        if ($existingOrder) {
+            Notification::make()
+                ->title('Ya cuenta con una solicitud en proceso con el mismo Folio')
+                ->danger()
+                ->send();
+            return;
+        }
+
         try {
             DB::transaction(function () use ($user, $data) {
                 $order = Order::create([

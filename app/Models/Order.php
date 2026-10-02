@@ -87,4 +87,38 @@ class Order extends Model
     {
         return $this->result_file_path ? route('orders.download', ['order' => $this->id]) : null;
     }
+
+    public function getElapsedTimeFormattedAttribute(): string
+    {
+        if (!$this->created_at) {
+            return '0 min';
+        }
+
+        $diffInMinutes = (int) $this->created_at->diffInMinutes(now());
+        $hours = intdiv($diffInMinutes, 60);
+        $minutes = $diffInMinutes % 60;
+
+        if ($hours > 0) {
+            return "{$hours} h {$minutes} min";
+        }
+
+        return "{$minutes} min";
+    }
+
+    public function getIsDelayedAttribute(): bool
+    {
+        if (!$this->created_at || !$this->service || empty($this->service->processing_time)) {
+            return false;
+        }
+
+        preg_match_all('/\d+/', (string) $this->service->processing_time, $matches);
+
+        if (empty($matches[0])) {
+            return false;
+        }
+
+        $maxMinutes = max(array_map('intval', $matches[0]));
+
+        return $this->created_at->diffInMinutes(now()) > $maxMinutes;
+    }
 }

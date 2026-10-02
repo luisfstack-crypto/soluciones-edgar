@@ -200,6 +200,9 @@ class OrderResource extends Resource
                         default => $state,
                     })
                     ->description(fn (Order $record): string => (string) ($record->admin_notes ?? '')),
+                Tables\Columns\ViewColumn::make('processing_timer')
+                    ->label('Tiempo de Proceso')
+                    ->view('filament.dashboard.columns.order-timer'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha')
                     ->dateTime()
