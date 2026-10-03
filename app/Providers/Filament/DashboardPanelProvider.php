@@ -54,6 +54,10 @@ class DashboardPanelProvider extends PanelProvider
                 \App\Filament\Dashboard\Widgets\UserRecentActivity::class,
             ])
             ->renderHook(
+                \Filament\View\PanelsRenderHook::BODY_START,
+                fn (): string => \Illuminate\Support\Facades\Blade::render('<x-announcement-modal />')
+            )
+            ->renderHook(
                 \Filament\View\PanelsRenderHook::USER_MENU_BEFORE,
                 fn (): string => \Illuminate\Support\Facades\Blade::render(<<<'HTML'
                     @if(auth()->check() && !auth()->user()->is_admin)
