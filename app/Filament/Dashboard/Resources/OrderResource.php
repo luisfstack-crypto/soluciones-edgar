@@ -239,11 +239,13 @@ class OrderResource extends Resource
                     ->label('Compartir')
                     ->icon('heroicon-o-share')
                     ->color('success')
-                    ->action(fn () => '') 
+                    ->url('#')
                     ->extraAttributes(fn ($record) => [
-                        'x-on:click.stop.prevent' => "
-                            const docUrl = '{$record->document_url}';
-                            const msj = 'Aquí tienes tu documento: ' + docUrl;
+                        'x-data' => '',
+                        'x-on:click.prevent' => "
+                            let docUrl = '{$record->document_url}';
+                            let msj = 'Aquí tienes tu documento: ' + docUrl;
+                            
                             if (navigator.share) {
                                 navigator.share({
                                     title: 'Documento',
@@ -255,7 +257,7 @@ class OrderResource extends Resource
                             } else {
                                 window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
                             }
-                        ",
+                        "
                     ])
                     ->visible(fn ($record): bool => $record->status === 'completed' && !empty($record->document_url)),
 

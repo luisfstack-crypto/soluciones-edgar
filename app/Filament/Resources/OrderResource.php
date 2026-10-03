@@ -322,25 +322,25 @@ class OrderResource extends Resource
                     ->label('Compartir')
                     ->icon('heroicon-o-share')
                     ->color('success')
-                    ->action(fn () => '') // Dummy action to satisfy Filament without executing heavy backend logic
+                    ->url('#')
                     ->extraAttributes(fn ($record) => [
-                        'x-on:click.stop.prevent' => "
-                            const docUrl = '{$record->document_url}';
-                            const msj = 'Aquí tienes tu documento: ' + docUrl;
+                        'x-data' => '',
+                        'x-on:click.prevent' => "
+                            let docUrl = '{$record->document_url}';
+                            let msj = 'Aquí tienes tu documento: ' + docUrl;
+                            
                             if (navigator.share) {
                                 navigator.share({
                                     title: 'Documento',
                                     text: 'Aquí tienes tu documento solicitado.',
                                     url: docUrl
                                 }).catch((error) => {
-                                    // Fallback para PC: Si el OS rechaza el Web Share, abre WhatsApp directamente
                                     window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
                                 });
                             } else {
-                                // Fallback directo si el navegador no soporta Web Share
                                 window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
                             }
-                        ",
+                        "
                     ])
                     ->visible(fn ($record): bool => $record->status === 'completed' && !empty($record->document_url)),
 
