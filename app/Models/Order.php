@@ -86,7 +86,13 @@ class Order extends Model
 
     public function getDocumentUrlAttribute(): ?string
     {
-        return $this->result_file_path ? route('orders.download', ['order' => $this->id]) : null;
+        return $this->result_file_path
+            ? \Illuminate\Support\Facades\URL::temporarySignedRoute(
+                'orders.download',
+                now()->addDays(7),
+                ['order' => $this->id],
+            )
+            : null;
     }
 
     public function getElapsedTimeFormattedAttribute(): string

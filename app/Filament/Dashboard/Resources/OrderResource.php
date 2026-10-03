@@ -231,20 +231,22 @@ class OrderResource extends Resource
                     ->label('Descargar')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('info')
-                    ->url(fn (Order $record) => route('orders.download', ['order' => $record->id]))
+                    ->url(fn (Order $record) => $record->document_url)
                     ->openUrlInNewTab()
                     ->visible(fn (Order $record) => $record->status === 'completed' && $record->result_file_path),
 
                 // ── Compartir ─────────────────────────────────────────────────
                 Tables\Actions\Action::make('share')
-                    ->label('Compartir')
+                    ->label('Compartir por WhatsApp')
                     ->icon('heroicon-o-share')
                     ->color('success')
-                    ->url('#')
-                    ->extraAttributes(fn ($record) => [
-                        'onclick' => "event.preventDefault(); var docUrl = '" . addslashes($record->document_url) . "'; var msj = 'Aquí tienes tu documento: ' + docUrl; if (navigator.share) { navigator.share({ title: 'Documento', url: docUrl }).catch(function() { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank'); }); } else { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank'); }"
-                    ])
-                    ->visible(fn ($record): bool => $record->status === 'completed' && !empty($record->document_url)),
+                    ->url(fn (Order $record) => 'https://wa.me/?text=' . urlencode(
+                        'Aquí tienes tu documento: ' . $record->document_url
+                    ))
+                    ->openUrlInNewTab()
+                    ->visible(fn (Order $record): bool =>
+                        $record->status === 'completed' && !empty($record->document_url)
+                    ),
 
                 // ── Admin shortcut ────────────────────────────────────────────
                 Action::make('manage')
