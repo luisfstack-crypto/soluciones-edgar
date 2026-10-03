@@ -96,6 +96,41 @@ class ServiceResource extends Resource
                             ]),
                     ]),
 
+                Forms\Components\Section::make('Horario de Disponibilidad')
+                    ->schema([
+                        Forms\Components\Toggle::make('has_schedule')
+                            ->label('Limitar disponibilidad por horario')
+                            ->default(false)
+                            ->live(),
+                        Forms\Components\CheckboxList::make('schedule_days')
+                            ->label('Días disponibles')
+                            ->options([
+                                1 => 'Lunes',
+                                2 => 'Martes',
+                                3 => 'Miércoles',
+                                4 => 'Jueves',
+                                5 => 'Viernes',
+                                6 => 'Sábado',
+                                7 => 'Domingo',
+                            ])
+                            ->columns(4)
+                            ->required(fn (Forms\Get $get): bool => (bool) $get('has_schedule'))
+                            ->visible(fn (Forms\Get $get): bool => (bool) $get('has_schedule')),
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\TimePicker::make('schedule_start')
+                                    ->label('Hora de inicio')
+                                    ->seconds(false)
+                                    ->required(fn (Forms\Get $get): bool => (bool) $get('has_schedule')),
+                                Forms\Components\TimePicker::make('schedule_end')
+                                    ->label('Hora de fin')
+                                    ->seconds(false)
+                                    ->after('schedule_start')
+                                    ->required(fn (Forms\Get $get): bool => (bool) $get('has_schedule')),
+                            ])
+                            ->visible(fn (Forms\Get $get): bool => (bool) $get('has_schedule')),
+                    ]),
+
                 Forms\Components\Section::make('Multimedia y Estado')
                     ->schema([
                         Forms\Components\FileUpload::make('image_path')

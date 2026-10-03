@@ -42,6 +42,16 @@ class BuyService extends Page implements HasForms
              return redirect()->to('/app/services');
         }
 
+        if (! $this->service->isAvailableNow()) {
+            Notification::make()
+                ->title('Servicio fuera de horario')
+                ->body($this->service->getNextAvailableMessage())
+                ->warning()
+                ->send();
+
+            return redirect()->to('/app/services');
+        }
+
         $this->form->fill();
     }
     
@@ -110,6 +120,16 @@ class BuyService extends Page implements HasForms
 
     public function submit()
     {
+        if (! $this->service?->isAvailableNow()) {
+            Notification::make()
+                ->title('Servicio fuera de horario')
+                ->body($this->service?->getNextAvailableMessage() ?? 'Intenta de nuevo más tarde.')
+                ->warning()
+                ->send();
+
+            return redirect()->to('/app/services');
+        }
+
         $data = $this->form->getState();
         $user = auth()->user();
         
