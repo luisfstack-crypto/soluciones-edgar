@@ -239,21 +239,25 @@ class OrderResource extends Resource
                     ->label('Compartir')
                     ->icon('heroicon-o-share')
                     ->color('success')
+                    ->action(fn () => '') 
                     ->extraAttributes(fn ($record) => [
-                        'x-data' => '',
-                        'x-on:click.prevent' => "
+                        'x-on:click.stop.prevent' => "
+                            const docUrl = '{$record->document_url}';
+                            const msj = 'Aquí tienes tu documento: ' + docUrl;
                             if (navigator.share) {
                                 navigator.share({
-                                    title: 'Documento - ' + '{$record->service->name}',
+                                    title: 'Documento',
                                     text: 'Aquí tienes tu documento solicitado.',
-                                    url: '{$record->document_url}'
-                                }).catch(console.error);
+                                    url: docUrl
+                                }).catch((error) => {
+                                    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
+                                });
                             } else {
-                                window.open('https://api.whatsapp.com/send?text=Aquí tienes tu documento: {$record->document_url}', '_blank');
+                                window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
                             }
                         ",
                     ])
-                    ->visible(fn ($record): bool => $record->status === 'completed' && $record->document_url),
+                    ->visible(fn ($record): bool => $record->status === 'completed' && !empty($record->document_url)),
 
                 // ── Admin shortcut ────────────────────────────────────────────
                 Action::make('manage')

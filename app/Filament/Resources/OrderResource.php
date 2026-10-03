@@ -322,21 +322,27 @@ class OrderResource extends Resource
                     ->label('Compartir')
                     ->icon('heroicon-o-share')
                     ->color('success')
+                    ->action(fn () => '') // Dummy action to satisfy Filament without executing heavy backend logic
                     ->extraAttributes(fn ($record) => [
-                        'x-data' => '',
-                        'x-on:click.prevent' => "
+                        'x-on:click.stop.prevent' => "
+                            const docUrl = '{$record->document_url}';
+                            const msj = 'Aquí tienes tu documento: ' + docUrl;
                             if (navigator.share) {
                                 navigator.share({
-                                    title: 'Documento - ' + '{$record->service->name}',
+                                    title: 'Documento',
                                     text: 'Aquí tienes tu documento solicitado.',
-                                    url: '{$record->document_url}'
-                                }).catch(console.error);
+                                    url: docUrl
+                                }).catch((error) => {
+                                    // Fallback para PC: Si el OS rechaza el Web Share, abre WhatsApp directamente
+                                    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
+                                });
                             } else {
-                                window.open('https://api.whatsapp.com/send?text=Aquí tienes tu documento: {$record->document_url}', '_blank');
+                                // Fallback directo si el navegador no soporta Web Share
+                                window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
                             }
                         ",
                     ])
-                    ->visible(fn ($record): bool => $record->status === 'completed' && $record->document_url),
+                    ->visible(fn ($record): bool => $record->status === 'completed' && !empty($record->document_url)),
 
                 // ── Upload result (not-completed only) ──────────────────────
                 Tables\Actions\Action::make('upload_result')
