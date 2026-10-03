@@ -300,6 +300,7 @@ class OrderResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\ActionGroup::make([
                 // ── Detalle ───────────────────────────────────────────────────
                 ViewAction::make('view')
                     ->label('Detalle')
@@ -318,29 +319,13 @@ class OrderResource extends Resource
                     ->visible(fn (Order $record) => $record->status === 'completed' && $record->result_file_path),
 
                 // ── Compartir ─────────────────────────────────────────────────
-                Action::make('share')
+                Tables\Actions\Action::make('share')
                     ->label('Compartir')
                     ->icon('heroicon-o-share')
                     ->color('success')
                     ->url('#')
                     ->extraAttributes(fn ($record) => [
-                        'x-data' => '',
-                        'x-on:click.prevent' => "
-                            let docUrl = '{$record->document_url}';
-                            let msj = 'Aquí tienes tu documento: ' + docUrl;
-                            
-                            if (navigator.share) {
-                                navigator.share({
-                                    title: 'Documento',
-                                    text: 'Aquí tienes tu documento solicitado.',
-                                    url: docUrl
-                                }).catch((error) => {
-                                    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
-                                });
-                            } else {
-                                window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank');
-                            }
-                        "
+                        'onclick' => "event.preventDefault(); var docUrl = '" . addslashes($record->document_url) . "'; var msj = 'Aquí tienes tu documento: ' + docUrl; if (navigator.share) { navigator.share({ title: 'Documento', url: docUrl }).catch(function() { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank'); }); } else { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msj), '_blank'); }"
                     ])
                     ->visible(fn ($record): bool => $record->status === 'completed' && !empty($record->document_url)),
 
@@ -372,6 +357,7 @@ class OrderResource extends Resource
                             ->send();
                     })
                     ->visible(fn (Order $record) => $record->status !== 'completed'),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
