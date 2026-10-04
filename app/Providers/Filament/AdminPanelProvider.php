@@ -33,8 +33,8 @@ class AdminPanelProvider extends PanelProvider
 
             ->brandLogo(asset('images/logo.png'))
             ->darkModeBrandLogo(asset('images/logo-dark.png'))
-            ->brandLogoHeight('3rem') 
-            ->favicon(asset('favicon.ico'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/favicon-32x32.png'))
             ->colors([
                 'primary' => Color::Indigo,  
             ])
