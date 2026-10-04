@@ -39,7 +39,9 @@ class BrandedErrorPagesTest extends TestCase
     {
         URL::forceScheme(null);
         $previousEnvironment = $this->app['env'];
+        $previousAppUrl = config('app.url');
         $this->app['env'] = 'production';
+        config(['app.url' => 'http://127.0.0.1']);
 
         try {
             (new AppServiceProvider($this->app))->boot();
@@ -47,6 +49,7 @@ class BrandedErrorPagesTest extends TestCase
             $this->assertStringStartsWith('https://', asset('images/favicon-32x32.png'));
         } finally {
             $this->app['env'] = $previousEnvironment;
+            config(['app.url' => $previousAppUrl]);
             URL::forceScheme(null);
         }
     }
@@ -54,7 +57,9 @@ class BrandedErrorPagesTest extends TestCase
     public function test_assets_keep_the_request_scheme_outside_production(): void
     {
         $previousEnvironment = $this->app['env'];
+        $previousAppUrl = config('app.url');
         $this->app['env'] = 'local';
+        config(['app.url' => 'http://127.0.0.1']);
 
         try {
             (new AppServiceProvider($this->app))->boot();
@@ -62,6 +67,7 @@ class BrandedErrorPagesTest extends TestCase
             $this->assertStringStartsWith('http://', asset('images/favicon-32x32.png'));
         } finally {
             $this->app['env'] = $previousEnvironment;
+            config(['app.url' => $previousAppUrl]);
             URL::forceScheme(null);
         }
     }
