@@ -42,10 +42,10 @@ class BuyService extends Page implements HasForms
              return redirect()->to('/app/services');
         }
 
-        if (! $this->service->isAvailableNow()) {
+        if (! $this->service->isAvailable()) {
             Notification::make()
-                ->title('Servicio fuera de horario')
-                ->body($this->service->getNextAvailableMessage())
+            ->title('Servicio no disponible')
+            ->body($this->service->unavailableReason())
                 ->warning()
                 ->send();
 
@@ -120,10 +120,12 @@ class BuyService extends Page implements HasForms
 
     public function submit()
     {
-        if (! $this->service?->isAvailableNow()) {
+        $this->service?->refresh();
+
+        if (! $this->service?->isAvailable()) {
             Notification::make()
-                ->title('Servicio fuera de horario')
-                ->body($this->service?->getNextAvailableMessage() ?? 'Intenta de nuevo más tarde.')
+            ->title('Servicio no disponible')
+            ->body($this->service?->unavailableReason() ?? 'Este servicio no está disponible por el momento')
                 ->warning()
                 ->send();
 
@@ -171,12 +173,20 @@ class BuyService extends Page implements HasForms
 
         try {
             DB::transaction(function () use ($user, $data) {
+                $service = Service::query()->lockForUpdate()->findOrFail($this->service->id);
+
+                if (! $service->isAvailable()) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'data' => $service->unavailableReason(),
+                    ]);
+                }
+
                 $order = Order::create([
                      'user_id' => $user->id,
-                     'service_id' => $this->service->id,
+                     'service_id' => $service->id,
                      'input_data' => $data['input_data'] ?? [],
                      'status' => 'pending',
-                     'price_at_purchase' => $this->service->price,
+                     'price_at_purchase' => $service->price,
                 ]);
                 
                 $admins = \App\Models\User::where('is_admin', true)->get();
@@ -206,6 +216,12 @@ class BuyService extends Page implements HasForms
             }
             return redirect('/app/services'); 
             
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Notification::make()
+                ->title('Servicio no disponible')
+                ->body(collect($e->errors())->flatten()->first() ?? 'Este servicio no está disponible por el momento')
+                ->warning()
+                ->send();
         } catch (\Exception $e) {
              Notification::make()
                 ->title('Error')

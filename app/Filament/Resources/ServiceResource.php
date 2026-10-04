@@ -131,6 +131,18 @@ class ServiceResource extends Resource
                             ->visible(fn (Forms\Get $get): bool => (bool) $get('has_schedule')),
                     ]),
 
+                Forms\Components\Section::make('Mantenimiento')
+                    ->schema([
+                        Forms\Components\Toggle::make('is_maintenance')
+                            ->label('En mantenimiento')
+                            ->live(),
+                        Forms\Components\TextInput::make('maintenance_message')
+                            ->label('Mensaje de mantenimiento (opcional)')
+                            ->placeholder('Ej. Volvemos mañana a las 9:00')
+                            ->maxLength(255)
+                            ->visible(fn (Forms\Get $get): bool => (bool) $get('is_maintenance')),
+                    ]),
+
                 Forms\Components\Section::make('Multimedia y Estado')
                     ->schema([
                         Forms\Components\FileUpload::make('image_path')
@@ -189,6 +201,12 @@ class ServiceResource extends Resource
                         ->weight(FontWeight::Bold)
                         ->size(Tables\Columns\TextColumn\TextColumnSize::Large)
                         ->searchable(),
+                    Tables\Columns\TextColumn::make('is_maintenance')
+                        ->label('Disponibilidad')
+                        ->formatStateUsing(fn (bool $state): ?string => $state ? 'En mantenimiento' : null)
+                        ->badge()
+                        ->color('warning')
+                        ->placeholder('Disponible'),
                     Tables\Columns\TextColumn::make('category.name')
                         ->label('Categoría / Etiqueta')
                         ->badge()
@@ -239,12 +257,18 @@ class ServiceResource extends Resource
             ])
             ->defaultGroup('category.name')
             ->filters([
+                Tables\Filters\TernaryFilter::make('is_maintenance')
+                    ->label('Mantenimiento')
+                    ->trueLabel('Solo en mantenimiento')
+                    ->falseLabel('Sin mantenimiento')
+                    ->placeholder('Todos'),
             ])
             ->actions([
                 Tables\Actions\Action::make('solicitar')
                     ->label('SOLICITAR')
                     ->button()
                     ->color('primary')
+                    ->disabled(fn (Service $record): bool => ! $record->isAvailable())
                     ->url(fn (Service $record) => route('filament.dashboard.pages.buy-service', ['service' => $record->id]))
                     ->visible(fn (Service $record) => $record->is_active),
                     

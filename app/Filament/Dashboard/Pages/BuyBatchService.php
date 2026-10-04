@@ -40,11 +40,19 @@ class BuyBatchService extends Page implements HasForms
 
     public ?array $data = [];
 
-    public function mount(): void
+    public function mount()
     {
         $this->service = Service::query()
             ->where('code', 'csf-curp-clon')
             ->firstOrFail();
+
+        if (! $this->service->isAvailable()) {
+            Notification::make()
+                ->title('Servicio no disponible')
+                ->body($this->service->unavailableReason())
+                ->warning()
+                ->send();
+        }
 
         $this->form->fill([
             'requests' => [[]],
@@ -85,11 +93,31 @@ class BuyBatchService extends Page implements HasForms
 
     public function submit()
     {
+        $this->service->refresh();
+
+        if (! $this->service->isAvailable()) {
+            Notification::make()
+                ->title('Servicio no disponible')
+                ->body($this->service->unavailableReason())
+                ->warning()
+                ->send();
+
+            return redirect()->to(OrderResource::getUrl('index', panel: 'dashboard'));
+        }
+
         $rows = $this->form->getState()['requests'] ?? [];
         $totalCost = round((float) $this->service->price * count($rows), 2);
         $authenticatedUser = auth()->user();
 
         DB::transaction(function () use ($authenticatedUser, $rows, $totalCost): void {
+            $service = Service::query()->lockForUpdate()->findOrFail($this->service->id);
+
+            if (! $service->isAvailable()) {
+                throw ValidationException::withMessages([
+                    'data.requests' => $service->unavailableReason(),
+                ]);
+            }
+
             $user = User::query()
                 ->lockForUpdate()
                 ->findOrFail($authenticatedUser->id);

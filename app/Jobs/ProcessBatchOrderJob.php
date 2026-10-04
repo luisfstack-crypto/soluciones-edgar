@@ -48,8 +48,35 @@ class ProcessBatchOrderJob implements ShouldQueue
             return;
         }
 
+        $this->service->refresh();
+
         try {
             DB::transaction(function () {
+                $service = Service::query()->lockForUpdate()->findOrFail($this->service->id);
+
+                if (! $service->isAvailable()) {
+                    $this->user->credit(
+                        $service->price,
+                        "Reembolso por servicio no disponible (Pedido por lote)",
+                    );
+
+                    $reason = $service->unavailableReason();
+                    Log::warning('ProcessBatchOrderJob: unavailable service, order skipped and refunded.', [
+                        'batch_id' => $this->batch()?->id,
+                        'service_id' => $service->id,
+                        'user_id' => $this->user->id,
+                        'reason' => $reason,
+                    ]);
+
+                    Notification::make()
+                        ->title('Servicio no disponible')
+                        ->body($reason)
+                        ->warning()
+                        ->sendToDatabase($this->user);
+
+                    return;
+                }
+
                 // Guard: block identical in-flight orders (same user / service / data)
                 $alreadyExists = false;
 
@@ -83,12 +110,12 @@ class ProcessBatchOrderJob implements ShouldQueue
                 // The Order::booted() created hook will automatically dispatch it to DocMX.
                 $order = Order::create([
                     'user_id'                  => $this->user->id,
-                    'service_id'               => $this->service->id,
+                    'service_id'               => $service->id,
                     'input_data'               => $this->inputData,
                     'status'                   => 'pending',
-                    'price_at_purchase'        => $this->service->price,
-                    'service_cost_snapshot'    => $this->service->cost    ?? null,
-                    'service_price_snapshot'   => $this->service->price   ?? null,
+                    'price_at_purchase'        => $service->price,
+                    'service_cost_snapshot'    => $service->cost    ?? null,
+                    'service_price_snapshot'   => $service->price   ?? null,
                     'batch_id'                 => $this->batch()?->id,
                 ]);
 

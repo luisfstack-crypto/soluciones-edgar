@@ -27,6 +27,8 @@ class Service extends Model
         'schedule_days',
         'schedule_start',
         'schedule_end',
+        'is_maintenance',
+        'maintenance_message',
     ];
 
     protected $casts = [
@@ -36,6 +38,7 @@ class Service extends Model
         'suggested_price' => 'decimal:2',
         'has_schedule' => 'boolean',
         'schedule_days' => 'array',
+        'is_maintenance' => 'boolean',
     ];
 
     public function orders(): HasMany
@@ -43,7 +46,7 @@ class Service extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function isAvailableNow(): bool
+    private function isWithinScheduleNow(): bool
     {
         if (! $this->has_schedule) {
             return true;
@@ -59,6 +62,29 @@ class Service extends Model
         return in_array($now->dayOfWeekIso, array_map('intval', $this->schedule_days), true)
             && $currentTime >= $this->schedule_start
             && $currentTime < $this->schedule_end;
+    }
+
+    public function isAvailable(): bool
+    {
+        return ! $this->is_maintenance && $this->isWithinScheduleNow();
+    }
+
+    public function isAvailableNow(): bool
+    {
+        return $this->isAvailable();
+    }
+
+    public function unavailableReason(): ?string
+    {
+        if ($this->is_maintenance) {
+            return $this->maintenance_message ?: 'Este servicio no está disponible por el momento';
+        }
+
+        if (! $this->isWithinScheduleNow()) {
+            return $this->getNextAvailableMessage();
+        }
+
+        return null;
     }
 
     public function getNextAvailableMessage(): string

@@ -7,7 +7,13 @@
         $projectedBalance = $userBalance - $totalCost;
     @endphp
 
-    <form wire:submit="submit" class="space-y-6">
+    @if (! $service->isAvailable())
+        <div class="mb-6 rounded-lg border border-warning-300 bg-warning-50 p-4 text-sm font-medium text-warning-800 dark:border-warning-700 dark:bg-warning-950/40 dark:text-warning-200">
+            {{ $service->unavailableReason() }}
+        </div>
+    @endif
+
+    <form wire:submit="submit" class="space-y-6 {{ ! $service->isAvailable() ? 'pointer-events-none opacity-50' : '' }}">
         {{ $this->form }}
 
         <section class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
@@ -34,7 +40,7 @@
         </section>
 
         <div class="flex justify-end">
-            <x-filament::button type="submit" size="lg" :disabled="$projectedBalance < 0">
+            <x-filament::button type="submit" size="lg" :disabled="$projectedBalance < 0 || ! $service->isAvailable()">
                 Enviar lote
             </x-filament::button>
         </div>

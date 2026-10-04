@@ -18,6 +18,16 @@ class OrderObserver
      */
     public function creating(Order $order): void
     {
+        $service = $order->service;
+        $authenticatedUser = auth()->user();
+        $isAdmin = $authenticatedUser && $authenticatedUser->is_admin;
+
+        if ($service && ! $service->isAvailable() && ! $isAdmin) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'service' => $service->unavailableReason(),
+            ]);
+        }
+
         if ($order->service) {
             $order->service_price_snapshot = $order->service->price;
             $order->service_cost_snapshot = $order->service->cost ?? 0;

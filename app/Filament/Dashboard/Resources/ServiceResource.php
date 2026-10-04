@@ -48,6 +48,13 @@ class ServiceResource extends Resource
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\Layout\Stack::make([
+                        Tables\Columns\TextColumn::make('is_maintenance')
+                            ->label('')
+                            ->formatStateUsing(fn (bool $state): ?string => $state ? 'En mantenimiento' : null)
+                            ->description(fn (Service $record): ?string => $record->is_maintenance ? $record->unavailableReason() : null)
+                            ->badge()
+                            ->color('warning')
+                            ->visible(fn (Service $record): bool => $record->is_maintenance),
                         Tables\Columns\TextColumn::make('name')
                             ->weight('bold')
                             ->size(Tables\Columns\TextColumn\TextColumnSize::Large)
@@ -79,7 +86,9 @@ class ServiceResource extends Resource
                             ->view('filament.columns.service-availability-overlay')
                             ->extraAttributes(['class' => 'absolute inset-0 z-10']),
                     ])->space(2)->extraAttributes(['class' => 'p-5']),
-                ])->space(0)->extraAttributes(['class' => 'relative bg-white dark:bg-gray-800 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 overflow-hidden transform transition hover:shadow-lg hover:-translate-y-1 duration-300']),
+                ])->space(0)->extraAttributes(fn (Service $record): array => [
+                    'class' => 'relative bg-white dark:bg-gray-800 rounded-xl shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 overflow-hidden transform transition hover:shadow-lg hover:-translate-y-1 duration-300 ' . ($record->is_maintenance ? 'opacity-60' : ''),
+                ]),
             ])
             ->groups([
                 Tables\Grouping\Group::make('category.name')
@@ -105,7 +114,7 @@ class ServiceResource extends Resource
                     ->button()
                     ->size('lg')
                     ->color('primary')
-                    ->disabled(fn (Service $record): bool => ! $record->isAvailableNow())
+                    ->disabled(fn (Service $record): bool => ! $record->isAvailable())
                     ->url(fn (Service $record) => route('filament.dashboard.pages.buy-service') . '?service=' . $record->id)
                     ->extraAttributes(['class' => 'w-full justify-center mb-4 mx-4']),
             ])
