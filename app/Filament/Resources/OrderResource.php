@@ -187,6 +187,10 @@ class OrderResource extends Resource
                             )
                             ->visible(fn ($record) => $record && $record->status === 'completed'),
 
+                        TextEntry::make('elapsed_time_formatted')
+                            ->label('TIEMPO')
+                            ->columnSpanFull(),
+
                         TextEntry::make('input_data')
                             ->label(fn ($record) => ($record?->service?->code === 'recibo-cfe')
                                 ? 'NÚMERO DE SERVICIO CFE'
@@ -278,8 +282,19 @@ class OrderResource extends Resource
                     ->label('Fecha')
                     ->dateTime()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('elapsed_time_formatted')
+                    ->label('Tiempo')
+                    ->sortable(false),
             ])
+            ->poll('60s')
             ->headerActions([
+                Tables\Actions\Action::make('refresh')
+                    ->label('Actualizar')
+                    ->icon('heroicon-o-arrow-path')
+                    ->action(fn () => \Filament\Notifications\Notification::make()
+                        ->title('Actualizado')
+                        ->success()
+                        ->send()),
                 Tables\Actions\ExportAction::make()
                     ->exporter(\App\Filament\Exports\AdminOrderExporter::class)
                     ->label('Exportar Reporte')
@@ -367,6 +382,7 @@ class OrderResource extends Resource
                 ]),
             ])
             ->defaultSort('created_at', 'desc');
+
     }
 
     public static function getEloquentQuery(): Builder

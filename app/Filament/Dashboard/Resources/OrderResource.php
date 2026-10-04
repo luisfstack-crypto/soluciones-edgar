@@ -121,6 +121,9 @@ class OrderResource extends Resource
                             )
                             ->visible(fn ($record) => $record && $record->status === 'completed'),
 
+                        TextEntry::make('elapsed_time_formatted')
+                            ->label('TIEMPO'),
+
                         TextEntry::make('input_data')
                             ->label(fn ($record) => ($record?->service?->code === 'recibo-cfe')
                                 ? 'NÚMERO DE SERVICIO CFE'
@@ -201,14 +204,22 @@ class OrderResource extends Resource
                     })
                     ->description(fn (Order $record): string => (string) ($record->admin_notes ?? '')),
                 Tables\Columns\ViewColumn::make('processing_timer')
-                    ->label('Tiempo de Proceso')
+                    ->label('Tiempo')
                     ->view('filament.dashboard.columns.order-timer'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Fecha')
                     ->dateTime()
                     ->sortable(),
             ])
+            ->poll('60s')
             ->headerActions([
+                Tables\Actions\Action::make('refresh')
+                    ->label('Actualizar')
+                    ->icon('heroicon-o-arrow-path')
+                    ->action(fn () => \Filament\Notifications\Notification::make()
+                        ->title('Actualizado')
+                        ->success()
+                        ->send()),
                 Tables\Actions\ExportAction::make()
                     ->exporter(\App\Filament\Exports\OrderExporter::class)
                     ->label('Exportar mis trámites')

@@ -25,6 +25,7 @@ class Order extends Model
 
     protected $casts = [
         'input_data' => 'array',
+        'completed_at' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -101,15 +102,31 @@ class Order extends Model
             return '0 min';
         }
 
-        $diffInMinutes = (int) $this->created_at->diffInMinutes(now());
-        $hours = intdiv($diffInMinutes, 60);
-        $minutes = $diffInMinutes % 60;
+        $endTime = $this->status === 'completed'
+            ? ($this->completed_at ?? $this->updated_at ?? now())
+            : now();
 
-        if ($hours > 0) {
-            return "{$hours} h {$minutes} min";
+        $diffInSeconds = (int) $this->created_at->diffInSeconds($endTime);
+
+        if ($diffInSeconds < 60) {
+            return 'Menos de 1 min';
         }
 
-        return "{$minutes} min";
+        $diffInMinutes = intdiv($diffInSeconds, 60);
+
+        if ($diffInMinutes < 60) {
+            return "{$diffInMinutes} min";
+        }
+
+        $days = intdiv($diffInMinutes, 1440);
+        $hours = intdiv($diffInMinutes % 1440, 60);
+        $minutes = $diffInMinutes % 60;
+
+        if ($days > 0) {
+            return $hours > 0 ? "{$days} d {$hours} h" : "{$days} d";
+        }
+
+        return $minutes > 0 ? "{$hours} h {$minutes} min" : "{$hours} h";
     }
 
     public function getIsDelayedAttribute(): bool

@@ -6,6 +6,13 @@ use App\Models\Order;
 
 class OrderObserver
 {
+    public function updating(Order $order): void
+    {
+        if ($order->isDirty('status') && $order->status === 'completed' && ! $order->completed_at) {
+            $order->completed_at = now();
+        }
+    }
+
     /**
      * Handle the Order "creating" event.
      */
