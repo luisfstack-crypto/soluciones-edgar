@@ -34,10 +34,10 @@ class DashboardPanelProvider extends PanelProvider
                 'primary' => Color::Sky,
             ])
             ->brandName('Soluciones Edgar')
-            ->brandLogo(asset('images/logo.png'))
-            ->darkModeBrandLogo(asset('images/logo-dark.png'))
+            ->brandLogo(fn () => '/images/logo.png')
+            ->darkModeBrandLogo(fn () => '/images/logo-dark.png')
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('images/favicon-32x32.png'))
+            ->favicon(fn () => '/images/favicon-32x32.png')
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
             ->viteTheme('resources/css/app.css')

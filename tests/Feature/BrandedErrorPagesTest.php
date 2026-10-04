@@ -44,7 +44,7 @@ class BrandedErrorPagesTest extends TestCase
         config(['app.url' => 'http://127.0.0.1']);
 
         try {
-            (new AppServiceProvider($this->app))->boot();
+            (new AppServiceProvider($this->app))->register();
 
             $this->assertStringStartsWith('https://', asset('images/favicon-32x32.png'));
         } finally {
@@ -62,7 +62,7 @@ class BrandedErrorPagesTest extends TestCase
         config(['app.url' => 'http://127.0.0.1']);
 
         try {
-            (new AppServiceProvider($this->app))->boot();
+            (new AppServiceProvider($this->app))->register();
 
             $this->assertStringStartsWith('http://', asset('images/favicon-32x32.png'));
         } finally {
