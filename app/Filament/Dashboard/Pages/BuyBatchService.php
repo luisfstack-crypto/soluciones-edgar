@@ -7,6 +7,7 @@ use App\Jobs\ProcessBatchOrderJob;
 use App\Models\Service;
 use App\Models\User;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -76,9 +77,30 @@ class BuyBatchService extends Page implements HasForms
                                     ->validationMessages([
                                         'regex' => 'Ingresa una CURP válida de 18 caracteres en mayúsculas.',
                                     ]),
-                                TextInput::make('lugarEmision')
+                                Select::make('lugarEmision')
                                     ->label('Lugar de Emisión')
-                                    ->required(),
+                                    ->required()
+                                    ->searchable()
+                                    ->options([
+                                        'Hoctún, Yucatán' => 'Hoctún, Yucatán',
+                                        'Homún, Yucatán' => 'Homún, Yucatán',
+                                        'Hocabá, Yucatán' => 'Hocabá, Yucatán',
+                                        'Mérida, Yucatán' => 'Mérida, Yucatán',
+                                        'Kanasín, Yucatán' => 'Kanasín, Yucatán',
+                                        'Valladolid, Yucatán' => 'Valladolid, Yucatán',
+                                        'Tizimín, Yucatán' => 'Tizimín, Yucatán',
+                                        'Progreso, Yucatán' => 'Progreso, Yucatán',
+                                        'Umán, Yucatán' => 'Umán, Yucatán',
+                                        'Tekax, Yucatán' => 'Tekax, Yucatán',
+                                        'Ticul, Yucatán' => 'Ticul, Yucatán',
+                                        'Motul, Yucatán' => 'Motul, Yucatán',
+                                        'Honey, Puebla' => 'Honey, Puebla',
+                                        'Hopelchén, Campeche' => 'Hopelchén, Campeche',
+                                        'Hostotipaquillo, Jalisco' => 'Hostotipaquillo, Jalisco',
+                                        'Honduras de la Sierra, Chiapas' => 'Honduras de la Sierra, Chiapas',
+                                    ])
+                                    ->preload()
+                                    ->native(false),
                             ])
                             ->columns(2)
                             ->defaultItems(1)
