@@ -198,6 +198,9 @@ class OrderFormValidationTest extends TestCase
                     : $fieldName
         );
         $docMx->shouldReceive('canonicalFields')->with('csf-curp-clon')->andReturn(['curp', 'lugarEmision']);
+        $docMx->shouldReceive('buildFormData')->andReturnUsing(
+            fn (string $serviceCode, array $formData): array => $formData
+        );
         $docMx->shouldReceive('createOrder')
             ->once()
             ->with(
@@ -230,6 +233,139 @@ class OrderFormValidationTest extends TestCase
         ]);
 
         $this->assertSame('pending', $order->fresh()->status);
+    }
+
+    public function test_recibo_cfe_sends_the_mapped_string_payload_to_docmx(): void
+    {
+        $docMx = Mockery::mock('overload:App\Services\DocMxService');
+        $docMx->shouldReceive('normalizeFormData')->andReturnUsing(
+            fn (string $serviceCode, array $formData): array => $formData
+        );
+        $docMx->shouldReceive('missingFields')->andReturn([]);
+        $docMx->shouldReceive('canonicalFields')->with('recibo-cfe')
+            ->andReturn(['cfe_number', 'nombre_titular', 'total_pagar']);
+        $docMx->shouldReceive('buildFormData')
+            ->with('recibo-cfe', [
+                'cfe_number' => '123456789012',
+                'nombre_titular' => 'PEREZ LOPEZ JUAN',
+                'total_pagar' => '1250',
+            ])
+            ->andReturn([
+                'numeroServicioCfe' => '123456789012',
+                'nombreTitularCfe' => 'PEREZ LOPEZ JUAN',
+                'totalPagarCfe' => '1250',
+            ]);
+        $docMx->shouldReceive('createOrder')
+            ->once()
+            ->with(
+                'recibo-cfe',
+                [
+                    'numeroServicioCfe' => '123456789012',
+                    'nombreTitularCfe' => 'PEREZ LOPEZ JUAN',
+                    'totalPagarCfe' => '1250',
+                ],
+                Mockery::type('string')
+            )
+            ->andReturn(Http::response(['accepted' => true], 200));
+
+        $user = User::create(['name' => 'Buyer', 'email' => 'buyer@example.test', 'balance' => 100]);
+        $service = Service::create([
+            'code' => 'recibo-cfe',
+            'price' => 9,
+            'form_schema' => [
+                ['name' => 'cfe_number', 'label' => 'Número de servicio', 'required' => true],
+                ['name' => 'nombre_titular', 'label' => 'Nombre del titular', 'required' => true],
+                ['name' => 'total_pagar', 'label' => 'Total a pagar', 'required' => true],
+            ],
+        ]);
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'service_id' => $service->id,
+            'input_data' => [
+                'cfe_number' => '123456789012',
+                'nombre_titular' => 'PEREZ LOPEZ JUAN',
+                'total_pagar' => '1250',
+            ],
+            'status' => 'pending',
+            'price_at_purchase' => 9,
+        ]);
+
+        $this->assertSame('pending', $order->fresh()->status);
+    }
+
+    public function test_recibo_cfe_without_name_is_rejected_and_refunded(): void
+    {
+        $docMx = Mockery::mock('overload:App\Services\DocMxService');
+        $docMx->shouldReceive('normalizeFormData')->andReturnUsing(
+            fn (string $serviceCode, array $formData): array => $formData
+        );
+        $docMx->shouldReceive('missingFields')->andReturn(['nombre_titular']);
+        $docMx->shouldReceive('canonicalFields')->with('recibo-cfe')
+            ->andReturn(['cfe_number', 'nombre_titular', 'total_pagar']);
+        $docMx->shouldNotReceive('buildFormData');
+        $docMx->shouldNotReceive('createOrder');
+
+        $user = User::create(['name' => 'Buyer', 'email' => 'buyer@example.test', 'balance' => 100]);
+        $service = Service::create([
+            'code' => 'recibo-cfe',
+            'price' => 9,
+            'form_schema' => [
+                ['name' => 'cfe_number', 'required' => true],
+                ['name' => 'nombre_titular', 'required' => true],
+                ['name' => 'total_pagar', 'required' => true],
+            ],
+        ]);
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'service_id' => $service->id,
+            'input_data' => [
+                'cfe_number' => '123456789012',
+                'total_pagar' => '1250',
+            ],
+            'status' => 'pending',
+            'price_at_purchase' => 9,
+        ]);
+
+        $this->assertSame('rejected', $order->fresh()->status);
+        $this->assertSame(100.0, (float) $user->fresh()->balance);
+        $this->assertDatabaseHas('transactions', ['type' => 'refund', 'amount' => 9]);
+    }
+
+    public function test_buy_service_recibo_cfe_validates_number_and_total_fields(): void
+    {
+        $user = User::create(['name' => 'Buyer', 'email' => 'buyer@example.test', 'balance' => 100]);
+        $service = Service::create([
+            'code' => 'recibo-cfe',
+            'price' => 9,
+            'form_schema' => [
+                ['name' => 'cfe_number', 'label' => 'Número de servicio', 'required' => true],
+                ['name' => 'nombre_titular', 'label' => 'Nombre del titular', 'required' => true],
+                ['name' => 'total_pagar', 'label' => 'Total a pagar', 'required' => true],
+            ],
+        ]);
+        $this->actingAs($user);
+
+        $page = app(BuyService::class);
+        $page->service = $service;
+        $page->form->fill([
+            'input_data' => [
+                'cfe_number' => '123',
+                'nombre_titular' => 'Perez Lopez Juan',
+                'total_pagar' => '12.50',
+            ],
+        ]);
+
+        try {
+            $page->submit();
+            $this->fail('Expected validation to fail.');
+        } catch (ValidationException $exception) {
+            $this->assertArrayHasKey('data.input_data.cfe_number', $exception->errors());
+            $this->assertArrayHasKey('data.input_data.total_pagar', $exception->errors());
+        }
+
+        $this->assertSame(0, Order::count());
     }
 
     public function test_buy_batch_service_rejects_missing_lugar_emision(): void

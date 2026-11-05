@@ -10,6 +10,15 @@ class DocMxService
 {
     public const CANONICAL_FIELDS = [
         'csf-curp-clon' => ['curp', 'lugarEmision'],
+        'recibo-cfe' => ['cfe_number', 'nombre_titular', 'total_pagar'],
+    ];
+
+    public const FIELD_MAP = [
+        'recibo-cfe' => [
+            'cfe_number' => 'numeroServicioCfe',
+            'nombre_titular' => 'nombreTitularCfe',
+            'total_pagar' => 'totalPagarCfe',
+        ],
     ];
 
     protected PendingRequest $client;
@@ -51,6 +60,25 @@ class DocMxService
         }
 
         return $normalized;
+    }
+
+    public function buildFormData(string $serviceCode, array $formData): array
+    {
+        $formData = $this->normalizeFormData($serviceCode, $formData);
+        $fieldMap = self::FIELD_MAP[$serviceCode] ?? [];
+        $mapped = [];
+
+        foreach ($formData as $fieldName => $value) {
+            $docMxFieldName = $fieldMap[$fieldName] ?? $fieldName;
+
+            if ($serviceCode === 'recibo-cfe' && $fieldName === 'nombre_titular') {
+                $value = mb_strtoupper(trim((string) $value));
+            }
+
+            $mapped[$docMxFieldName] = (string) $value;
+        }
+
+        return $mapped;
     }
 
     public function requiredFields(string $serviceCode, array $formSchema): array

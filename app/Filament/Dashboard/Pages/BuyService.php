@@ -68,15 +68,39 @@ class BuyService extends Page implements HasForms
         
         if ($this->service && !empty($this->service->form_schema)) {
              $schema = collect($this->service->form_schema)->map(function ($field) {
-                if (($this->service->code ?? '') === 'recibo-cfe' || ($field['name'] ?? '') === 'cfe_number') {
-                    $fieldName = ($field['name'] ?? '') === 'curp' ? 'cfe_number' : ($field['name'] ?? 'cfe_number');
-                    return TextInput::make("input_data.{$fieldName}")
-                        ->label('Número de Servicio CFE * (12 dígitos)')
+                if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'cfe_number') {
+                    return TextInput::make('input_data.cfe_number')
+                        ->label('Número de servicio (12 dígitos)')
                         ->required()
-                        ->numeric()
-                        ->rules(['digits:12'])
+                        ->inputMode('numeric')
+                        ->regex('/^\d{12}$/')
+                        ->placeholder('123456789012')
                         ->validationMessages([
-                            'digits' => 'El número de CFE debe tener exactamente 12 dígitos numéricos.',
+                            'regex' => 'El número de servicio debe tener exactamente 12 dígitos.',
+                        ]);
+                }
+
+                if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'nombre_titular') {
+                    return TextInput::make('input_data.nombre_titular')
+                        ->label($field['label'] ?? 'Nombre del titular')
+                        ->required()
+                        ->maxLength(150)
+                        ->placeholder('Ej. PEREZ LOPEZ JUAN')
+                        ->helperText($field['helperText'] ?? $field['helper_text'] ?? null)
+                        ->dehydrateStateUsing(fn (?string $state): ?string => $state === null ? null : mb_strtoupper(trim($state)));
+                }
+
+                if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'total_pagar') {
+                    return TextInput::make('input_data.total_pagar')
+                        ->label($field['label'] ?? 'Total a pagar')
+                        ->required()
+                        ->regex('/^\d+$/')
+                        ->gt(0)
+                        ->placeholder('1250')
+                        ->helperText($field['helperText'] ?? $field['helper_text'] ?? null)
+                        ->validationMessages([
+                            'regex' => 'El total a pagar debe ser un entero positivo, sin centavos.',
+                            'gt' => 'El total a pagar debe ser mayor que cero.',
                         ]);
                 }
 
@@ -187,6 +211,10 @@ class BuyService extends Page implements HasForms
         }
 
         $inputData = $data['input_data'] ?? [];
+        if (($this->service->code ?? '') === 'recibo-cfe' && isset($inputData['nombre_titular'])) {
+            $inputData['nombre_titular'] = mb_strtoupper(trim((string) $inputData['nombre_titular']));
+            $data['input_data'] = $inputData;
+        }
 
         $existingOrder = false;
         try {

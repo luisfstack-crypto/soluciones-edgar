@@ -61,9 +61,10 @@ class Order extends Model
                     }
                 }
 
+                $docMxFormData = $docMx->buildFormData($serviceCode, $formData);
                 $response = $docMx->createOrder(
                     $serviceCode, 
-                    $formData,
+                    $docMxFormData,
                     (string) $order->id
                 );
 
@@ -77,7 +78,7 @@ class Order extends Model
                     Log::error("DocMX rejected order {$order->id} [HTTP {$statusCode}]: {$errorMessage}", [
                         'payload' => [
                             'service_id' => $serviceCode,
-                            'form_data' => $formData,
+                            'form_data' => $docMxFormData,
                             'external_order_id' => (string) $order->id,
                         ],
                         'response' => $errorData,

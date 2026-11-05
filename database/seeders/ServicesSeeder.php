@@ -475,14 +475,27 @@ class ServicesSeeder extends Seeder
                 'form_schema' => [
                     [
                         'name' => 'cfe_number',
-                        'label' => 'Número de Servicio CFE * (12 dígitos)',
+                        'label' => 'Número de servicio (12 dígitos)',
                         'type' => 'text',
                         'required' => true,
-                        'numeric' => true,
-                        'rules' => ['digits:12'],
-                        'validationMessages' => [
-                            'digits' => 'El número de CFE debe tener exactamente 12 dígitos numéricos.',
-                        ],
+                        'placeholder' => '123456789012',
+                        'regex' => '/^\d{12}$/',
+                    ],
+                    [
+                        'name' => 'nombre_titular',
+                        'label' => 'Nombre del titular',
+                        'type' => 'text',
+                        'required' => true,
+                        'maxLength' => 150,
+                        'placeholder' => 'Ej. PEREZ LOPEZ JUAN',
+                    ],
+                    [
+                        'name' => 'total_pagar',
+                        'label' => 'Total a pagar (en pesos, sin centavos)',
+                        'type' => 'text',
+                        'required' => true,
+                        'regex' => '/^\d+$/',
+                        'placeholder' => '1250',
                     ],
                 ],
             ],
