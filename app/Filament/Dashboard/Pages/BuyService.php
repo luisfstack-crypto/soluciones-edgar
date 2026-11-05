@@ -82,7 +82,6 @@ class BuyService extends Page implements HasForms
                 if (($field['name'] ?? '') === 'lugarEmision') {
                     return Select::make('input_data.lugarEmision')
                         ->label('Lugar de Emisión')
-                        ->required()
                         ->searchable()
                         ->options([
                             'Hoctún, Yucatán' => 'Hoctún, Yucatán',
@@ -103,7 +102,11 @@ class BuyService extends Page implements HasForms
                             'Honduras de la Sierra, Chiapas' => 'Honduras de la Sierra, Chiapas',
                         ])
                         ->preload()
-                        ->native(false);
+                        ->native(false)
+                        ->required()
+                        ->validationMessages([
+                            'required' => 'Selecciona un lugar de emisión de la lista.',
+                        ]);
                 }
 
                 $input = TextInput::make("input_data.{$field['name']}")

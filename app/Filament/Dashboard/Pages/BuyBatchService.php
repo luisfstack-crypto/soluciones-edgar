@@ -79,7 +79,6 @@ class BuyBatchService extends Page implements HasForms
                                     ]),
                                 Select::make('lugarEmision')
                                     ->label('Lugar de Emisión')
-                                    ->required()
                                     ->searchable()
                                     ->options([
                                         'Hoctún, Yucatán' => 'Hoctún, Yucatán',
@@ -100,7 +99,11 @@ class BuyBatchService extends Page implements HasForms
                                         'Honduras de la Sierra, Chiapas' => 'Honduras de la Sierra, Chiapas',
                                     ])
                                     ->preload()
-                                    ->native(false),
+                                    ->native(false)
+                                    ->required()
+                                    ->validationMessages([
+                                        'required' => 'Selecciona un lugar de emisión de la lista.',
+                                    ]),
                             ])
                             ->columns(2)
                             ->defaultItems(1)
