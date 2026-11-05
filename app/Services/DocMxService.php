@@ -8,7 +8,87 @@ use Illuminate\Http\Client\Response;
 
 class DocMxService
 {
+    public const CANONICAL_FIELDS = [
+        'csf-curp-clon' => ['curp', 'lugarEmision'],
+    ];
+
     protected PendingRequest $client;
+
+    public function canonicalFields(string $serviceCode): array
+    {
+        return self::CANONICAL_FIELDS[$serviceCode] ?? [];
+    }
+
+    public function canonicalFieldName(string $serviceCode, string $fieldName): string
+    {
+        foreach ($this->canonicalFields($serviceCode) as $canonicalField) {
+            if (strcasecmp($canonicalField, $fieldName) === 0) {
+                return $canonicalField;
+            }
+        }
+
+        return $fieldName;
+    }
+
+    public function normalizeFormData(string $serviceCode, array $formData): array
+    {
+        $normalized = $formData;
+
+        foreach ($this->canonicalFields($serviceCode) as $canonicalField) {
+            foreach (array_keys($formData) as $fieldName) {
+                if (strcasecmp($canonicalField, (string) $fieldName) !== 0) {
+                    continue;
+                }
+
+                $normalized[$canonicalField] = $formData[$fieldName];
+
+                if ($fieldName !== $canonicalField) {
+                    unset($normalized[$fieldName]);
+                }
+
+                break;
+            }
+        }
+
+        return $normalized;
+    }
+
+    public function requiredFields(string $serviceCode, array $formSchema): array
+    {
+        $requiredFields = collect($formSchema)
+            ->filter(function (array $field): bool {
+                if (! ($field['required'] ?? false) || ($field['type'] ?? 'text') === 'file') {
+                    return false;
+                }
+
+                return ! empty($field['name']);
+            })
+            ->pluck('name')
+            ->map(fn (string $field): string => $this->canonicalFieldName($serviceCode, $field))
+            ->values();
+
+        foreach ($formSchema as $field) {
+            if ($this->canonicalFieldName($serviceCode, (string) ($field['name'] ?? '')) === 'lugarEmision') {
+                $requiredFields->push('lugarEmision');
+            }
+        }
+
+        foreach ($this->canonicalFields($serviceCode) as $canonicalField) {
+            $requiredFields->push($canonicalField);
+        }
+
+        return $requiredFields->unique()->values()->all();
+    }
+
+    public function missingFields(string $serviceCode, array $formSchema, array $formData): array
+    {
+        $normalized = $this->normalizeFormData($serviceCode, $formData);
+
+        return collect($this->requiredFields($serviceCode, $formSchema))
+            ->filter(fn (string $field): bool => blank(data_get($normalized, $field)))
+            ->values()
+            ->all();
+    }
 
     public function __construct()
     {

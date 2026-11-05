@@ -31,11 +31,35 @@ class Order extends Model
     protected static function booted(): void
     {
         static::created(function (Order $order) {
-            $formData = is_array($order->input_data) ? $order->input_data : [];
-
             try {
+                $formData = is_array($order->input_data) ? $order->input_data : [];
+                $serviceCode = $order->service?->code ?? (string) $order->service_id;
                 $docMx = new DocMxService();
-                $serviceCode = $order->service ? $order->service->code : $order->service_id;
+                $formData = $docMx->normalizeFormData($serviceCode, $formData);
+                $formSchema = $order->service?->form_schema ?? [];
+                $missingFields = $docMx->missingFields($serviceCode, $formSchema, $formData);
+
+                if ($missingFields !== []) {
+                    Log::warning('Order not sent to DocMX because required fields are missing.', [
+                        'order_id' => $order->id,
+                        'service_code' => $order->service?->code,
+                        'missing_fields' => $missingFields,
+                    ]);
+
+                    $canonicalMissingFields = array_values(array_intersect(
+                        $missingFields,
+                        $docMx->canonicalFields($serviceCode)
+                    ));
+
+                    if ($canonicalMissingFields !== []) {
+                        $order->update([
+                            'status' => 'rejected',
+                            'admin_notes' => 'Campos requeridos ausentes: ' . implode(', ', $canonicalMissingFields),
+                        ]);
+
+                        return;
+                    }
+                }
 
                 $response = $docMx->createOrder(
                     $serviceCode, 

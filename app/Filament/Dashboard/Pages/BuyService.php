@@ -13,6 +13,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class BuyService extends Page implements HasForms
 {
@@ -164,6 +165,16 @@ class BuyService extends Page implements HasForms
         }
 
         $data = $this->form->getState();
+
+        $hasLugarEmision = collect($this->service?->form_schema ?? [])
+            ->contains(fn (array $field): bool => ($field['name'] ?? '') === 'lugarEmision');
+
+        if ($hasLugarEmision && blank(data_get($data, 'input_data.lugarEmision'))) {
+            throw ValidationException::withMessages([
+                'data.input_data.lugarEmision' => 'Selecciona un lugar de emisión de la lista.',
+            ]);
+        }
+
         $user = auth()->user();
         
         if (! $user->is_admin && $user->balance < $this->service->price) {

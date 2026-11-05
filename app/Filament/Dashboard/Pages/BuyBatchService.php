@@ -130,7 +130,23 @@ class BuyBatchService extends Page implements HasForms
             return redirect()->to(OrderResource::getUrl('index', panel: 'dashboard'));
         }
 
-        $rows = $this->form->getState()['requests'] ?? [];
+        $rawState = $this->form->getRawState();
+        $rawRows = $rawState['requests'] ?? [];
+        $hasLugarEmision = collect($this->service->form_schema ?? [])
+            ->contains(fn (array $field): bool => ($field['name'] ?? '') === 'lugarEmision');
+
+        if ($hasLugarEmision) {
+            foreach ($rawRows as $key => $row) {
+                if (blank($row['lugarEmision'] ?? null)) {
+                    throw ValidationException::withMessages([
+                        "data.requests.{$key}.lugarEmision" => 'Selecciona un lugar de emisión de la lista.',
+                    ]);
+                }
+            }
+        }
+
+        $state = $this->form->getState();
+        $rows = $state['requests'] ?? [];
         $totalCost = round((float) $this->service->price * count($rows), 2);
         $authenticatedUser = auth()->user();
 

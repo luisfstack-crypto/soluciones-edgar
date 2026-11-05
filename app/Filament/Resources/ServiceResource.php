@@ -167,7 +167,7 @@ class ServiceResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->label('Identificador (sin espacios)')
                                     ->required()
-                                    ->regex('/^[a-z0-9_]+$/')
+                                    ->regex('/^[A-Za-z0-9_]+$/')
                                     ->rules(['alpha_dash']),
                                 Forms\Components\TextInput::make('label')
                                     ->label('Etiqueta (visible al usuario)')
