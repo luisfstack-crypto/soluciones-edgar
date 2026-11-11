@@ -4,7 +4,6 @@ namespace App\Filament\Dashboard\Pages;
 
 use App\Models\Service;
 use App\Models\Order; // Importante añadir el Modelo Order
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -105,33 +104,10 @@ class BuyService extends Page implements HasForms
                 }
 
                 if (($field['name'] ?? '') === 'lugarEmision') {
-                    return Select::make('input_data.lugarEmision')
-                        ->label('Lugar de Emisión')
-                        ->searchable()
-                        ->options([
-                            'Hoctún, Yucatán' => 'Hoctún, Yucatán',
-                            'Homún, Yucatán' => 'Homún, Yucatán',
-                            'Hocabá, Yucatán' => 'Hocabá, Yucatán',
-                            'Mérida, Yucatán' => 'Mérida, Yucatán',
-                            'Kanasín, Yucatán' => 'Kanasín, Yucatán',
-                            'Valladolid, Yucatán' => 'Valladolid, Yucatán',
-                            'Tizimín, Yucatán' => 'Tizimín, Yucatán',
-                            'Progreso, Yucatán' => 'Progreso, Yucatán',
-                            'Umán, Yucatán' => 'Umán, Yucatán',
-                            'Tekax, Yucatán' => 'Tekax, Yucatán',
-                            'Ticul, Yucatán' => 'Ticul, Yucatán',
-                            'Motul, Yucatán' => 'Motul, Yucatán',
-                            'Honey, Puebla' => 'Honey, Puebla',
-                            'Hopelchén, Campeche' => 'Hopelchén, Campeche',
-                            'Hostotipaquillo, Jalisco' => 'Hostotipaquillo, Jalisco',
-                            'Honduras de la Sierra, Chiapas' => 'Honduras de la Sierra, Chiapas',
-                        ])
-                        ->preload()
-                        ->native(false)
-                        ->required()
-                        ->validationMessages([
-                            'required' => 'Selecciona un lugar de emisión de la lista.',
-                        ]);
+                    return TextInput::make('input_data.lugarEmision')
+                        ->label($field['label'] ?? 'Lugar de Emisión')
+                        ->placeholder('Ej. Cuauhtémoc, Ciudad de México')
+                        ->required();
                 }
 
                 $input = TextInput::make("input_data.{$field['name']}")
@@ -195,7 +171,7 @@ class BuyService extends Page implements HasForms
 
         if ($hasLugarEmision && blank(data_get($data, 'input_data.lugarEmision'))) {
             throw ValidationException::withMessages([
-                'data.input_data.lugarEmision' => 'Selecciona un lugar de emisión de la lista.',
+                'data.input_data.lugarEmision' => 'Indica el lugar de emisión.',
             ]);
         }
 

@@ -205,7 +205,7 @@ class OrderFormValidationTest extends TestCase
             ->once()
             ->with(
                 'csf-curp-clon',
-                ['curp' => 'ABCD010101HYNAAA01', 'lugarEmision' => 'Mérida, Yucatán'],
+                ['curp' => 'ABCD010101HYNAAA01', 'lugarEmision' => 'Cuauhtémoc, Ciudad de México'],
                 Mockery::type('string')
             )
             ->andReturn(Http::response(['accepted' => true], 200));
@@ -226,7 +226,7 @@ class OrderFormValidationTest extends TestCase
             'service_id' => $service->id,
             'input_data' => [
                 'curp' => 'ABCD010101HYNAAA01',
-                'lugaremision' => 'Mérida, Yucatán',
+                'lugaremision' => 'Cuauhtémoc, Ciudad de México',
             ],
             'status' => 'pending',
             'price_at_purchase' => 60,
