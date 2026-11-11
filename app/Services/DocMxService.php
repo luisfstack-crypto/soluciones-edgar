@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 
 class DocMxService
 {
@@ -83,6 +83,10 @@ class DocMxService
 
     public function requiredFields(string $serviceCode, array $formSchema): array
     {
+        if ($serviceCode === 'localizar-nss') {
+            return ['curp'];
+        }
+
         $requiredFields = collect($formSchema)
             ->filter(function (array $field): bool {
                 if (! ($field['required'] ?? false) || ($field['type'] ?? 'text') === 'file') {
@@ -161,5 +165,12 @@ class DocMxService
     public function getOrder(string $docMxOrderId): array
     {
         return $this->client->get("/orders/{$docMxOrderId}")->json();
+    }
+
+    public function lookupNssByCurp(string $curp): ?string
+    {
+        throw new \LogicException(
+            'La consulta CURP → NSS todavía no está disponible en la API de DocMX. El webhook solo notifica el estado de órdenes.'
+        );
     }
 }

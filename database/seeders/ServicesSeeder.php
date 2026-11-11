@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Service;
+use Illuminate\Database\Seeder;
 
 class ServicesSeeder extends Seeder
 {
@@ -378,7 +378,8 @@ class ServicesSeeder extends Seeder
                 'service_type' => 'IMSS',
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
-                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => true, 'regex' => '/^\d{11}$/'],
+                    ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
+                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => false],
                 ],
             ],
             [
