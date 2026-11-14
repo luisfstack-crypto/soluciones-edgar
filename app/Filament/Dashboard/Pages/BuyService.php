@@ -9,9 +9,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class BuyService extends Page implements HasForms
@@ -128,6 +131,48 @@ class BuyService extends Page implements HasForms
                     ->label($field['label'])
                     ->required($field['required'] ?? false);
 
+                if ($this->isPostalCodeField($field)) {
+                    $locationFields = collect($this->service->form_schema ?? [])
+                        ->filter(fn (array $candidate): bool => $this->isLocationField($candidate))
+                        ->mapWithKeys(fn (array $candidate): array => [
+                            $candidate['name'] => $this->locationFieldType($candidate),
+                        ])
+                        ->all();
+
+                    $input
+                        ->live(debounce: 400)
+                        ->afterStateUpdated(function (Set $set, ?string $state) use ($locationFields): void {
+                            $postalCode = trim((string) $state);
+
+                            if (preg_match('/^\d{5}$/', $postalCode) !== 1) {
+                                return;
+                            }
+
+                            try {
+                                $response = Http::timeout(5)
+                                    ->get("https://api.zippopotam.us/mx/{$postalCode}");
+
+                                if (! $response->successful()) {
+                                    return;
+                                }
+
+                                $place = data_get($response->json(), 'places.0');
+                                $stateName = data_get($place, 'state');
+                                $placeName = data_get($place, 'place name');
+
+                                foreach ($locationFields as $fieldName => $fieldType) {
+                                    $value = $fieldType === 'state' ? $stateName : $placeName;
+
+                                    if (is_string($value) && $value !== '') {
+                                        $set("input_data.{$fieldName}", $value);
+                                    }
+                                }
+                            } catch (\Throwable) {
+                                // Postal-code lookup is optional and must not interrupt order entry.
+                            }
+                        });
+                }
+
                 if (($this->service->code ?? '') === 'localizar-nss' && ($field['name'] ?? '') === 'curp') {
                     $input->helperText('El servicio devuelve el NSS al procesar la solicitud; solo se envía la CURP.');
                 }
@@ -166,6 +211,57 @@ class BuyService extends Page implements HasForms
                     ->columns(1),
             ])
             ->statePath('data');
+    }
+
+    private function isPostalCodeField(array $field): bool
+    {
+        foreach ([$field['name'] ?? '', $field['label'] ?? ''] as $value) {
+            $identifier = Str::of((string) $value)
+                ->ascii()
+                ->lower()
+                ->replaceMatches('/[^a-z0-9]+/', '_')
+                ->trim('_')
+                ->toString();
+
+            if (
+                str_contains($identifier, 'cp')
+                || str_contains($identifier, 'codigo_postal')
+                || str_contains($identifier, 'codigopostal')
+                || str_contains($identifier, 'postal_code')
+                || str_contains($identifier, 'postalcode')
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isLocationField(array $field): bool
+    {
+        return $this->locationFieldType($field) !== null;
+    }
+
+    private function locationFieldType(array $field): ?string
+    {
+        foreach ([$field['name'] ?? '', $field['label'] ?? ''] as $value) {
+            $identifier = Str::of((string) $value)
+                ->ascii()
+                ->lower()
+                ->replaceMatches('/[^a-z0-9]+/', '_')
+                ->trim('_')
+                ->toString();
+
+            if (str_contains($identifier, 'estado') || str_contains($identifier, 'state')) {
+                return 'state';
+            }
+
+            if (str_contains($identifier, 'municipio') || str_contains($identifier, 'alcaldia')) {
+                return 'place';
+            }
+        }
+
+        return null;
     }
 
     public function submit()
