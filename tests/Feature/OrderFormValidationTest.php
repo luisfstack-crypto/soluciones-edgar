@@ -401,4 +401,43 @@ class OrderFormValidationTest extends TestCase
             );
         }
     }
+
+    public function test_localizar_nss_individual_form_only_submits_curp(): void
+    {
+        $page = app(BuyService::class);
+        $page->service = new Service([
+            'code' => 'localizar-nss',
+            'form_schema' => [
+                ['name' => 'curp', 'label' => 'CURP', 'required' => true],
+                ['name' => 'nss', 'label' => 'NSS', 'required' => false],
+            ],
+        ]);
+        $page->form->fill([
+            'input_data' => [
+                'curp' => 'ABCD010101HYNAAA01',
+                'nss' => '12345678901',
+            ],
+        ]);
+
+        $this->assertSame(
+            ['curp' => 'ABCD010101HYNAAA01'],
+            $page->form->getState()['input_data']
+        );
+    }
+
+    public function test_localizar_nss_batch_form_only_submits_curp(): void
+    {
+        $page = app(BuyBatchService::class);
+        $page->service = new Service(['code' => 'localizar-nss']);
+        $page->form->fill([
+            'requests' => [[
+                'curp' => 'ABCD010101HYNAAA01',
+            ]],
+        ]);
+
+        $this->assertSame(
+            [['curp' => 'ABCD010101HYNAAA01']],
+            array_values($page->form->getState()['requests'])
+        );
+    }
 }

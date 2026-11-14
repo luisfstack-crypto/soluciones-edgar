@@ -4,13 +4,11 @@ namespace App\Filament\Dashboard\Pages;
 
 use App\Models\Order; // Importante añadir el Modelo Order
 use App\Models\Service;
-use App\Services\DocMxService;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\DB;
@@ -73,64 +71,16 @@ class BuyService extends Page implements HasForms
 
             if (($this->service->code ?? '') === 'localizar-nss') {
                 $formSchema = [
-                    ['name' => 'curp', 'label' => 'CURP', 'required' => true],
-                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'required' => false],
+                    [
+                        'name' => 'curp',
+                        'label' => 'CURP',
+                        'required' => true,
+                        'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/',
+                    ],
                 ];
             }
 
             $schema = collect($formSchema)->map(function ($field) {
-                if (($this->service->code ?? '') === 'localizar-nss' && ($field['name'] ?? '') === 'curp') {
-                    return TextInput::make('input_data.curp')
-                        ->label('CURP')
-                        ->required()
-                        ->regex('/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/')
-                        ->live(debounce: 500)
-                        ->afterStateUpdated(function (Set $set, ?string $state, DocMxService $docMx): void {
-                            $set('input_data.nss', null);
-                            $curp = strtoupper(trim((string) $state));
-
-                            if (preg_match('/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/', $curp) !== 1) {
-                                return;
-                            }
-
-                            try {
-                                $nss = $docMx->lookupNssByCurp($curp);
-                            } catch (\LogicException $exception) {
-                                Notification::make()
-                                    ->title('Autollenado de NSS no disponible')
-                                    ->body($exception->getMessage())
-                                    ->warning()
-                                    ->send();
-
-                                return;
-                            }
-
-                            if ($nss === null) {
-                                return;
-                            }
-
-                            if (preg_match('/^\d{11}$/', $nss) !== 1) {
-                                Notification::make()
-                                    ->title('Respuesta de NSS inválida')
-                                    ->body('La consulta debe devolver un NSS de exactamente 11 dígitos.')
-                                    ->danger()
-                                    ->send();
-
-                                return;
-                            }
-
-                            $set('input_data.nss', $nss);
-                        });
-                }
-
-                if (($this->service->code ?? '') === 'localizar-nss' && ($field['name'] ?? '') === 'nss') {
-                    return TextInput::make('input_data.nss')
-                        ->label('NSS (11 dígitos)')
-                        ->readOnly()
-                        ->dehydrated(false)
-                        ->helperText('El NSS se mostrará aquí cuando la consulta CURP → NSS esté configurada.');
-                }
-
                 if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'cfe_number') {
                     return TextInput::make('input_data.cfe_number')
                         ->label('Número de servicio (12 dígitos)')
@@ -177,6 +127,10 @@ class BuyService extends Page implements HasForms
                 $input = TextInput::make("input_data.{$field['name']}")
                     ->label($field['label'])
                     ->required($field['required'] ?? false);
+
+                if (($this->service->code ?? '') === 'localizar-nss' && ($field['name'] ?? '') === 'curp') {
+                    $input->helperText('El servicio devuelve el NSS al procesar la solicitud; solo se envía la CURP.');
+                }
 
                 if (!empty($field['numeric'])) {
                     $input->numeric();
@@ -251,6 +205,13 @@ class BuyService extends Page implements HasForms
         }
 
         $inputData = $data['input_data'] ?? [];
+        if (($this->service->code ?? '') === 'localizar-nss') {
+            $inputData = [
+                'curp' => strtoupper(trim((string) ($inputData['curp'] ?? ''))),
+            ];
+            $data['input_data'] = $inputData;
+        }
+
         if (($this->service->code ?? '') === 'recibo-cfe' && isset($inputData['nombre_titular'])) {
             $inputData['nombre_titular'] = mb_strtoupper(trim((string) $inputData['nombre_titular']));
             $data['input_data'] = $inputData;

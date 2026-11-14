@@ -371,7 +371,7 @@ class ServicesSeeder extends Seeder
             [
                 'code' => 'localizar-nss',
                 'name' => 'Localizar NSS',
-                'description' => 'LEER INFORMACION SERVICIO ACTIVO Todos los días 24/7 ORDENAR SOLO CON LA CURP EST ORDEN SOLO LE ARROJARA EL NSS DE UNA CURP 5 Minutos Tiempo de Entrega',
+                'description' => 'Servicio activo todos los días, 24/7. Ordena solo con la CURP; el NSS se devuelve al procesar la solicitud. Tiempo de entrega: 5 minutos.',
                 'cost' => 9.00,
                 'price' => 20.00,
                 'suggested_price' => 30.00,
@@ -379,7 +379,6 @@ class ServicesSeeder extends Seeder
                 'processing_time' => '10 Minutos',
                 'form_schema' => [
                     ['name' => 'curp', 'label' => 'CURP', 'type' => 'text', 'required' => true, 'regex' => '/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/'],
-                    ['name' => 'nss', 'label' => 'NSS (11 dígitos)', 'type' => 'text', 'required' => false],
                 ],
             ],
             [

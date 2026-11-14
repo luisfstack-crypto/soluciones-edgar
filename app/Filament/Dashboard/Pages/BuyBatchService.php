@@ -26,7 +26,7 @@ class BuyBatchService extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Solicitar por Lote';
 
-    protected static ?string $title = 'Constancias de Situación Fiscal (Lote)';
+    protected static ?string $title = 'Solicitar por lote';
 
     protected static ?string $slug = 'solicitar-por-lote';
 
@@ -42,8 +42,11 @@ class BuyBatchService extends Page implements HasForms
 
     public function mount()
     {
+        $serviceCode = (string) request()->query('service', 'csf-curp-clon');
+
         $this->service = Service::query()
-            ->where('code', 'csf-curp-clon')
+            ->whereIn('code', ['csf-curp-clon', 'localizar-nss'])
+            ->where('code', $serviceCode)
             ->firstOrFail();
 
         if (! $this->service->isAvailable()) {
@@ -59,31 +62,52 @@ class BuyBatchService extends Page implements HasForms
         ]);
     }
 
+    public function getTitle(): string
+    {
+        return ($this->service->code ?? '') === 'localizar-nss'
+            ? 'Localizar NSS (Lote)'
+            : 'Constancias de Situación Fiscal (Lote)';
+    }
+
     public function form(Form $form): Form
     {
+        $isNssLookup = ($this->service->code ?? '') === 'localizar-nss';
+
         return $form
             ->schema([
                 Section::make('Solicitudes')
-                    ->description('Agrega una solicitud por cada constancia que necesitas.')
+                    ->description($isNssLookup
+                        ? 'Agrega una CURP por solicitud. El NSS lo devuelve el servicio al procesar cada orden.'
+                        : 'Agrega una solicitud por cada constancia que necesitas.')
                     ->schema([
                         Repeater::make('requests')
                             ->label('Solicitudes')
-                            ->schema([
-                                TextInput::make('curp')
-                                    ->label('CURP o RFC')
-                                    ->required()
-                                    ->regex('/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/')
-                                    ->validationMessages([
-                                        'regex' => 'Ingresa una CURP válida de 18 caracteres en mayúsculas.',
-                                    ]),
-                                TextInput::make('lugarEmision')
-                                    ->label('Lugar de Emisión')
-                                    ->placeholder('Ej. Cuauhtémoc, Ciudad de México')
-                                    ->required()
-                                    ->validationMessages([
-                                        'required' => 'Indica el lugar de emisión.',
-                                    ]),
-                            ])
+                            ->schema($isNssLookup
+                                ? [
+                                    TextInput::make('curp')
+                                        ->label('CURP')
+                                        ->required()
+                                        ->regex('/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/')
+                                        ->validationMessages([
+                                            'regex' => 'Ingresa una CURP válida de 18 caracteres en mayúsculas.',
+                                        ]),
+                                ]
+                                : [
+                                    TextInput::make('curp')
+                                        ->label('CURP o RFC')
+                                        ->required()
+                                        ->regex('/^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[A-Z0-9]{2}$/')
+                                        ->validationMessages([
+                                            'regex' => 'Ingresa una CURP válida de 18 caracteres en mayúsculas.',
+                                        ]),
+                                    TextInput::make('lugarEmision')
+                                        ->label('Lugar de Emisión')
+                                        ->placeholder('Ej. Cuauhtémoc, Ciudad de México')
+                                        ->required()
+                                        ->validationMessages([
+                                            'required' => 'Indica el lugar de emisión.',
+                                        ]),
+                                ])
                             ->columns(2)
                             ->defaultItems(1)
                             ->minItems(1)
@@ -126,6 +150,15 @@ class BuyBatchService extends Page implements HasForms
 
         $state = $this->form->getState();
         $rows = $state['requests'] ?? [];
+
+        if (($this->service->code ?? '') === 'localizar-nss') {
+            $rows = collect($rows)
+                ->map(fn (array $row): array => [
+                    'curp' => strtoupper(trim((string) ($row['curp'] ?? ''))),
+                ])
+                ->all();
+        }
+
         $totalCost = round((float) $this->service->price * count($rows), 2);
         $authenticatedUser = auth()->user();
 

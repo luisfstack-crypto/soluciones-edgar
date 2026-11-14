@@ -13,6 +13,18 @@
         </div>
     @endif
 
+    <div class="mb-4 text-sm">
+        @if ($service->code === 'localizar-nss')
+            <a class="text-primary-600 hover:underline dark:text-primary-400" href="{{ request()->url() }}">
+                Solicitar constancias SAT por lote
+            </a>
+        @else
+            <a class="text-primary-600 hover:underline dark:text-primary-400" href="{{ request()->url() }}?service=localizar-nss">
+                Solicitar Localizar NSS por lote
+            </a>
+        @endif
+    </div>
+
     <form wire:submit="submit" class="space-y-6 {{ ! $service->isAvailable() ? 'pointer-events-none opacity-50' : '' }}">
         {{ $this->form }}
 

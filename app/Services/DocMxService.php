@@ -11,6 +11,7 @@ class DocMxService
     public const CANONICAL_FIELDS = [
         'csf-curp-clon' => ['curp', 'lugarEmision'],
         'recibo-cfe' => ['cfe_number', 'nombre_titular', 'total_pagar'],
+        'localizar-nss' => ['curp'],
     ];
 
     public const FIELD_MAP = [
@@ -41,6 +42,18 @@ class DocMxService
 
     public function normalizeFormData(string $serviceCode, array $formData): array
     {
+        if ($serviceCode === 'localizar-nss') {
+            foreach ($formData as $fieldName => $value) {
+                if (strcasecmp((string) $fieldName, 'curp') === 0) {
+                    return is_string($value)
+                        ? ['curp' => strtoupper(trim($value))]
+                        : [];
+                }
+            }
+
+            return [];
+        }
+
         $normalized = $formData;
 
         foreach ($this->canonicalFields($serviceCode) as $canonicalField) {
@@ -65,6 +78,11 @@ class DocMxService
     public function buildFormData(string $serviceCode, array $formData): array
     {
         $formData = $this->normalizeFormData($serviceCode, $formData);
+
+        if ($serviceCode === 'localizar-nss') {
+            return isset($formData['curp']) ? ['curp' => $formData['curp']] : [];
+        }
+
         $fieldMap = self::FIELD_MAP[$serviceCode] ?? [];
         $mapped = [];
 
@@ -83,10 +101,6 @@ class DocMxService
 
     public function requiredFields(string $serviceCode, array $formSchema): array
     {
-        if ($serviceCode === 'localizar-nss') {
-            return ['curp'];
-        }
-
         $requiredFields = collect($formSchema)
             ->filter(function (array $field): bool {
                 if (! ($field['required'] ?? false) || ($field['type'] ?? 'text') === 'file') {
@@ -167,10 +181,4 @@ class DocMxService
         return $this->client->get("/orders/{$docMxOrderId}")->json();
     }
 
-    public function lookupNssByCurp(string $curp): ?string
-    {
-        throw new \LogicException(
-            'La consulta CURP → NSS todavía no está disponible en la API de DocMX. El webhook solo notifica el estado de órdenes.'
-        );
-    }
 }
