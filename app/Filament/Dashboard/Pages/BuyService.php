@@ -2,9 +2,12 @@
 
 namespace App\Filament\Dashboard\Pages;
 
-use App\Models\Order; // Importante añadir el Modelo Order
+use App\Models\Order;
 use App\Models\Service;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -84,35 +87,67 @@ class BuyService extends Page implements HasForms
             }
 
             $schema = collect($formSchema)->map(function ($field) {
-                if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'cfe_number') {
-                    return TextInput::make('input_data.cfe_number')
+                $fieldName = $field['name'] ?? '';
+                $fieldPath = "input_data.{$fieldName}";
+
+                $input = match ($field['type'] ?? 'text') {
+                    'textarea' => Textarea::make($fieldPath),
+                    'number' => TextInput::make($fieldPath)->numeric(),
+                    'date' => DatePicker::make($fieldPath),
+                    'select' => Select::make($fieldPath)
+                        ->options(($field['options_source'] ?? 'custom') === 'estados_mexico'
+                            ? $this->mexicanStates()
+                            : $this->customFieldOptions($field['options'] ?? []))
+                        ->searchable((bool) ($field['searchable'] ?? true))
+                        ->preload(),
+                    default => TextInput::make($fieldPath),
+                };
+
+                $input
+                    ->label($field['label'] ?? '')
+                    ->required((bool) ($field['required'] ?? false))
+                    ->placeholder($field['placeholder'] ?? null);
+
+                if (isset($field['autofill'])) {
+                    $default = match ($field['autofill']) {
+                        'user_name' => auth()->user()?->name,
+                        'user_email' => auth()->user()?->email,
+                        'user_phone' => auth()->user()?->phone ?? null,
+                        default => null,
+                    };
+
+                    $input->default($default);
+                }
+
+                if (($this->service->code ?? '') === 'recibo-cfe' && $fieldName === 'cfe_number' && $input instanceof TextInput) {
+                    $input
                         ->label('Número de servicio (12 dígitos)')
                         ->required()
                         ->inputMode('numeric')
                         ->regex('/^\d{12}$/')
-                        ->placeholder('123456789012')
+                        ->placeholder($field['placeholder'] ?? '123456789012')
                         ->validationMessages([
                             'regex' => 'El número de servicio debe tener exactamente 12 dígitos.',
                         ]);
                 }
 
-                if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'nombre_titular') {
-                    return TextInput::make('input_data.nombre_titular')
+                if (($this->service->code ?? '') === 'recibo-cfe' && $fieldName === 'nombre_titular' && $input instanceof TextInput) {
+                    $input
                         ->label($field['label'] ?? 'Nombre del titular')
                         ->required()
                         ->maxLength(150)
-                        ->placeholder('Ej. PEREZ LOPEZ JUAN')
+                        ->placeholder($field['placeholder'] ?? 'Ej. PEREZ LOPEZ JUAN')
                         ->helperText($field['helperText'] ?? $field['helper_text'] ?? null)
                         ->dehydrateStateUsing(fn (?string $state): ?string => $state === null ? null : mb_strtoupper(trim($state)));
                 }
 
-                if (($this->service->code ?? '') === 'recibo-cfe' && ($field['name'] ?? '') === 'total_pagar') {
-                    return TextInput::make('input_data.total_pagar')
+                if (($this->service->code ?? '') === 'recibo-cfe' && $fieldName === 'total_pagar' && $input instanceof TextInput) {
+                    $input
                         ->label($field['label'] ?? 'Total a pagar')
                         ->required()
                         ->regex('/^\d+$/')
                         ->gt(0)
-                        ->placeholder('1250')
+                        ->placeholder($field['placeholder'] ?? '1250')
                         ->helperText($field['helperText'] ?? $field['helper_text'] ?? null)
                         ->validationMessages([
                             'regex' => 'El total a pagar debe ser un entero positivo, sin centavos.',
@@ -120,16 +155,12 @@ class BuyService extends Page implements HasForms
                         ]);
                 }
 
-                if (($field['name'] ?? '') === 'lugarEmision') {
-                    return TextInput::make('input_data.lugarEmision')
+                if ($fieldName === 'lugarEmision' && $input instanceof TextInput) {
+                    $input
                         ->label($field['label'] ?? 'Lugar de Emisión')
-                        ->placeholder('Ej. Cuauhtémoc, Ciudad de México')
+                        ->placeholder($field['placeholder'] ?? 'Ej. Cuauhtémoc, Ciudad de México')
                         ->required();
                 }
-
-                $input = TextInput::make("input_data.{$field['name']}")
-                    ->label($field['label'])
-                    ->required($field['required'] ?? false);
 
                 if ($this->isPostalCodeField($field)) {
                     $locationFields = collect($this->service->form_schema ?? [])
@@ -177,7 +208,7 @@ class BuyService extends Page implements HasForms
                     $input->helperText('El servicio devuelve el NSS al procesar la solicitud; solo se envía la CURP.');
                 }
 
-                if (!empty($field['numeric'])) {
+                if (!empty($field['numeric']) && $input instanceof TextInput) {
                     $input->numeric();
                 }
 
@@ -211,6 +242,51 @@ class BuyService extends Page implements HasForms
                     ->columns(1),
             ])
             ->statePath('data');
+    }
+
+    private function customFieldOptions(mixed $options): array
+    {
+        $options = is_array($options) ? array_values($options) : [];
+
+        return array_combine($options, $options) ?: [];
+    }
+
+    private function mexicanStates(): array
+    {
+        return [
+            'Aguascalientes' => 'Aguascalientes',
+            'Baja California' => 'Baja California',
+            'Baja California Sur' => 'Baja California Sur',
+            'Campeche' => 'Campeche',
+            'Chiapas' => 'Chiapas',
+            'Chihuahua' => 'Chihuahua',
+            'Ciudad de México' => 'Ciudad de México',
+            'Coahuila' => 'Coahuila',
+            'Colima' => 'Colima',
+            'Durango' => 'Durango',
+            'Estado de México' => 'Estado de México',
+            'Guanajuato' => 'Guanajuato',
+            'Guerrero' => 'Guerrero',
+            'Hidalgo' => 'Hidalgo',
+            'Jalisco' => 'Jalisco',
+            'Michoacán' => 'Michoacán',
+            'Morelos' => 'Morelos',
+            'Nayarit' => 'Nayarit',
+            'Nuevo León' => 'Nuevo León',
+            'Oaxaca' => 'Oaxaca',
+            'Puebla' => 'Puebla',
+            'Querétaro' => 'Querétaro',
+            'Quintana Roo' => 'Quintana Roo',
+            'San Luis Potosí' => 'San Luis Potosí',
+            'Sinaloa' => 'Sinaloa',
+            'Sonora' => 'Sonora',
+            'Tabasco' => 'Tabasco',
+            'Tamaulipas' => 'Tamaulipas',
+            'Tlaxcala' => 'Tlaxcala',
+            'Veracruz' => 'Veracruz',
+            'Yucatán' => 'Yucatán',
+            'Zacatecas' => 'Zacatecas',
+        ];
     }
 
     private function isPostalCodeField(array $field): bool

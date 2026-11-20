@@ -175,6 +175,48 @@ class ServiceResource extends Resource
                                 Forms\Components\Toggle::make('required')
                                     ->label('¿Obligatorio?')
                                     ->default(true),
+                                Forms\Components\Select::make('type')
+                                    ->label('Tipo de campo')
+                                    ->options([
+                                        'text' => 'Texto corto',
+                                        'textarea' => 'Texto largo',
+                                        'number' => 'Número',
+                                        'date' => 'Fecha',
+                                        'select' => 'Lista de opciones (Desplegable)',
+                                    ])
+                                    ->default('text')
+                                    ->live()
+                                    ->required(),
+                                Forms\Components\Select::make('options_source')
+                                    ->label('Origen de las opciones')
+                                    ->options([
+                                        'custom' => 'Escribir opciones manualmente',
+                                        'estados_mexico' => 'Catálogo: Estados de México (32 estados)',
+                                    ])
+                                    ->default('custom')
+                                    ->live()
+                                    ->visible(fn (Forms\Get $get): bool => $get('type') === 'select'),
+                                Forms\Components\TagsInput::make('options')
+                                    ->label('Opciones de la lista')
+                                    ->placeholder('Escribe una opción y presiona Enter')
+                                    ->visible(fn (Forms\Get $get): bool => $get('type') === 'select' && $get('options_source') === 'custom')
+                                    ->required(fn (Forms\Get $get): bool => $get('type') === 'select' && $get('options_source') === 'custom'),
+                                Forms\Components\Toggle::make('searchable')
+                                    ->label('¿Permitir búsqueda en la lista?')
+                                    ->default(true)
+                                    ->visible(fn (Forms\Get $get): bool => $get('type') === 'select'),
+                                Forms\Components\Select::make('autofill')
+                                    ->label('Autollenado automático (Opcional)')
+                                    ->options([
+                                        'user_name' => 'Nombre del usuario logueado',
+                                        'user_email' => 'Correo del usuario logueado',
+                                        'user_phone' => 'Teléfono del usuario (si existe)',
+                                    ])
+                                    ->nullable()
+                                    ->placeholder('Sin autollenado'),
+                                Forms\Components\TextInput::make('placeholder')
+                                    ->label('Texto de ayuda / Placeholder')
+                                    ->nullable(),
                             ])
                             ->columns(3)
                             ->defaultItems(0)

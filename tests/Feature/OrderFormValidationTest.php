@@ -7,6 +7,10 @@ use App\Filament\Dashboard\Pages\BuyService;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -141,6 +145,64 @@ class OrderFormValidationTest extends TestCase
         }
 
         $this->assertSame(0, Order::count());
+    }
+
+    public function test_buy_service_renders_dynamic_custom_field_types_and_options(): void
+    {
+        $user = User::create([
+            'name' => 'Buyer',
+            'email' => 'buyer@example.test',
+            'balance' => 100,
+            'is_admin' => false,
+        ]);
+        $this->actingAs($user);
+
+        $service = Service::create([
+            'form_schema' => [
+                ['name' => 'short_text', 'label' => 'Texto', 'required' => false],
+                [
+                    'name' => 'user_name',
+                    'label' => 'Nombre',
+                    'autofill' => 'user_name',
+                    'placeholder' => 'Nombre completo',
+                ],
+                ['name' => 'long_text', 'label' => 'Detalles', 'type' => 'textarea'],
+                ['name' => 'quantity', 'label' => 'Cantidad', 'type' => 'number'],
+                ['name' => 'birth_date', 'label' => 'Fecha', 'type' => 'date'],
+                [
+                    'name' => 'color',
+                    'label' => 'Color',
+                    'type' => 'select',
+                    'options_source' => 'custom',
+                    'options' => ['Rojo', 'Azul'],
+                    'searchable' => false,
+                ],
+                [
+                    'name' => 'state',
+                    'label' => 'Estado',
+                    'type' => 'select',
+                    'options_source' => 'estados_mexico',
+                ],
+            ],
+        ]);
+        $page = app(BuyService::class);
+        $page->service = $service;
+        $fields = $page->form->getFlatFields();
+
+        $this->assertInstanceOf(TextInput::class, $fields['input_data.short_text']);
+        $this->assertSame('Buyer', $fields['input_data.user_name']->getDefaultState());
+        $this->assertSame('Nombre completo', $fields['input_data.user_name']->getPlaceholder());
+        $this->assertInstanceOf(Textarea::class, $fields['input_data.long_text']);
+        $this->assertInstanceOf(TextInput::class, $fields['input_data.quantity']);
+        $this->assertInstanceOf(DatePicker::class, $fields['input_data.birth_date']);
+        $this->assertInstanceOf(Select::class, $fields['input_data.color']);
+        $this->assertSame(['Rojo' => 'Rojo', 'Azul' => 'Azul'], $fields['input_data.color']->getOptions());
+        $this->assertFalse($fields['input_data.color']->isSearchable());
+        $this->assertTrue($fields['input_data.color']->isPreloaded());
+        $this->assertInstanceOf(Select::class, $fields['input_data.state']);
+        $this->assertCount(32, $fields['input_data.state']->getOptions());
+        $this->assertSame('Ciudad de México', $fields['input_data.state']->getOptions()['Ciudad de México']);
+        $this->assertSame('Yucatán', $fields['input_data.state']->getOptions()['Yucatán']);
     }
 
     public function test_order_with_missing_lugar_emision_is_rejected_without_calling_docmx_and_refunded(): void
